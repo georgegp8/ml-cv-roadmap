@@ -15,7 +15,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
   title = 'Python Playground' 
 }) => {
   const [code, setCode] = useState(initialCode);
-  const [output, setOutput] = useState('Click "Run Code" to execute Python code in your browser.');
+  const [output, setOutput] = useState('Haz clic en "Ejecutar Código" para ejecutar Python en tu navegador.');
   const [isLoading, setIsLoading] = useState(false);
   const [pyodideReady, setPyodideReady] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -33,7 +33,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
     
     loadingRef.current = true;
     setIsLoading(true);
-    setOutput('Loading Python environment (first time only, ~15-20 seconds)...\n');
+    setOutput('Cargando entorno Python (solo la primera vez, ~15-20 segundos)...\n');
     
     try {
       // Verificar si ya existe el script
@@ -58,17 +58,17 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
         });
         
         // Pre-instalar paquetes comunes de ML/CV disponibles en Pyodide
-        setOutput(prev => prev + 'Installing packages (numpy, matplotlib, scikit-learn, pandas)...\n');
+        setOutput(prev => prev + 'Instalando paquetes (numpy, matplotlib, scikit-learn, pandas)...\n');
         await pyodide.loadPackage(['numpy', 'matplotlib', 'scikit-learn', 'pandas']);
         
         pyodideRef.current = pyodide;
         setPyodideReady(true);
-        setOutput('✓ Python ready with ML libraries! Running your code...\n');
+        setOutput('✓ Python listo con librerías ML! Ejecutando tu código...\n');
         return true;
       }
     } catch (error: any) {
       console.error('Error loading Pyodide:', error);
-      setOutput(`Error loading Python: ${error.message}\nPlease refresh the page and try again.`);
+      setOutput(`Error cargando Python: ${error.message}\nPor favor recarga la página e intenta de nuevo.`);
       setIsLoading(false);
       loadingRef.current = false;
       return false;
@@ -85,7 +85,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
     }
 
     setIsLoading(true);
-    setOutput('Running...\n');
+    setOutput('Ejecutando...\n');
 
     try {
       // Capturar stdout
@@ -101,7 +101,7 @@ sys.stdout = StringIO()
       // Obtener la salida
       const stdout = await pyodideRef.current.runPythonAsync('sys.stdout.getvalue()');
       
-      setOutput(stdout || '✓ Code executed successfully (no output)');
+      setOutput(stdout || '✓ Código ejecutado exitosamente (sin salida)');
     } catch (error: any) {
       setOutput(`Error:\n${error.message}`);
     } finally {
@@ -112,8 +112,8 @@ sys.stdout = StringIO()
   const resetCode = () => {
     setCode(initialCode);
     setOutput(pyodideReady 
-      ? '✓ Code reset to original example. Click "Run Code" to execute.\n'
-      : 'Click "Run Code" to execute Python code in your browser.'
+      ? '✓ Código reseteado al ejemplo original. Haz clic en "Ejecutar Código" para ejecutar.\n'
+      : 'Haz clic en "Ejecutar Código" para ejecutar Python en tu navegador.'
     );
   };
 
@@ -121,7 +121,7 @@ sys.stdout = StringIO()
     return (
       <div className="bg-retro-black border-2 border-retro-orange/30 rounded-lg overflow-hidden p-8 text-center">
         <Loader2 className="animate-spin mx-auto mb-2 text-retro-orange" size={24} />
-        <p className="text-gray-400 text-sm">Loading editor...</p>
+        <p className="text-gray-400 text-sm">Cargando editor...</p>
       </div>
     );
   }
@@ -153,12 +153,12 @@ sys.stdout = StringIO()
             {isLoading ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
-                Running...
+                Ejecutando...
               </>
             ) : (
               <>
                 <Play size={14} />
-                Run Code
+                Ejecutar Código
               </>
             )}
           </button>
@@ -185,9 +185,9 @@ sys.stdout = StringIO()
 
       {/* Output */}
       <div className="bg-[#1e1e1e] p-4">
-        <div className="text-xs text-gray-500 mb-2 font-pixel">OUTPUT:</div>
+        <div className="text-xs text-gray-500 mb-2 font-pixel">SALIDA:</div>
         <pre className="text-green-400 font-mono text-sm whitespace-pre-wrap">
-          {output || 'No output yet. Run the code to see results.'}
+          {output || 'Sin salida aún. Ejecuta el código para ver los resultados.'}
         </pre>
       </div>
     </div>

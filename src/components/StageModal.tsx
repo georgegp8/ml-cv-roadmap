@@ -73,9 +73,9 @@ export const StageModal: React.FC<StageModalProps> = ({
             {/* Tabs */}
             <div className="flex border-b-4 border-retro-gray bg-retro-black">
               {[
-                { id: 'overview', label: 'Overview', icon: BookOpen },
-                { id: 'code', label: 'Code', icon: Code },
-                { id: 'demo', label: 'Visuals', icon: Play },
+                { id: 'overview', label: 'Resumen', icon: BookOpen },
+                { id: 'code', label: 'Código', icon: Code },
+                { id: 'demo', label: 'Playground', icon: Play },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -99,12 +99,12 @@ export const StageModal: React.FC<StageModalProps> = ({
               {activeTab === 'overview' && (
                 <div className="space-y-8 animate-in fade-in duration-300">
                   <div>
-                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Mission Briefing</h3>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Descripción de la Misión</h3>
                     <p className="text-gray-300 leading-relaxed text-lg">{stage.description}</p>
                   </div>
                   
                   <div>
-                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Objectives</h3>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Objetivos</h3>
                     <ul className="space-y-3">
                       {stage.objectives.map((obj, idx) => (
                         <li key={idx} className="flex items-start gap-3 bg-retro-gray/30 p-3 rounded border border-retro-gray">
@@ -116,7 +116,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                   </div>
                   
                   <div>
-                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Key Concepts</h3>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Conceptos Clave</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {stage.keyTopics.map((topic, idx) => (
                         <div key={idx} className="flex items-center gap-3 bg-retro-gray/30 p-3 rounded border border-retro-gray">
@@ -128,7 +128,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                   </div>
                   
                   <div>
-                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Resources</h3>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Recursos</h3>
                     <div className="space-y-2">
                       {stage.resources.map((resource, idx) => (
                         <a
@@ -146,7 +146,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-gray-500 mt-8 p-4 bg-retro-gray/20 rounded border border-retro-gray">
-                    <span>⏱️ Estimated Time:</span>
+                    <span>⏱️ Tiempo Estimado:</span>
                     <span className="text-white font-semibold">{stage.duration}</span>
                   </div>
                 </div>
@@ -203,7 +203,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                   {/* Additional Examples */}
                   {stage.practicalExamples.length > 1 && (
                     <div className="mt-6">
-                      <h4 className="text-retro-orange font-bold mb-3">More Examples to Try:</h4>
+                      <h4 className="text-retro-orange font-bold mb-3">Más Ejemplos para Probar:</h4>
                       <div className="grid grid-cols-1 gap-3">
                         {stage.practicalExamples.slice(1).map((example, idx) => (
                           <details key={idx} className="bg-retro-gray/20 p-4 rounded border border-retro-gray cursor-pointer">
@@ -225,13 +225,13 @@ export const StageModal: React.FC<StageModalProps> = ({
                   {/* Pro Tips */}
                   <div className="bg-retro-orange/10 border-l-4 border-retro-orange p-4 rounded mt-6">
                     <h4 className="text-retro-orange font-bold mb-2 flex items-center gap-2">
-                      <span>🚀</span> Pro Tips
+                      <span>🚀</span> Consejos Pro
                     </h4>
                     <ul className="space-y-2 text-sm text-gray-300">
-                      <li>• Modify the code and see instant results</li>
-                      <li>• Use print() to debug and understand the flow</li>
-                      <li>• Try different values to experiment</li>
-                      <li>• Click "Reset" to restore original code</li>
+                      <li>• Modifica el código y ve los resultados instantáneamente</li>
+                      <li>• Usa print() para depurar y entender el flujo</li>
+                      <li>• Prueba diferentes valores para experimentar</li>
+                      <li>• Haz clic en "Resetear" para restaurar el código original</li>
                     </ul>
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                 onClick={onClose}
                 className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
               >
-                ← Back to Roadmap
+                ← Volver al Roadmap
               </button>
               <button
                 onClick={() => {
@@ -264,11 +264,11 @@ export const StageModal: React.FC<StageModalProps> = ({
                 {isCompleted ? (
                   <>
                     <CheckCircle size={18} />
-                    Mission Complete
+                    Misión Completa
                   </>
                 ) : (
                   <>
-                    Complete Mission
+                    Completar Misión
                     <span className="animate-pulse">_</span>
                   </>
                 )}

@@ -87,7 +87,7 @@ print(processor.process())  # [20, 40]`,
   },
   {
     id: 'numpy-matplotlib',
-    icon: '🔢',
+    icon: '�',
     title: 'NumPy & Matplotlib',
     subtitle: 'Computación numérica y visualización',
     description:
@@ -513,7 +513,7 @@ with torch.no_grad():
   },
   {
     id: 'torchvision',
-    icon: '🖼️',
+    icon: '�️‍🗨️',
     title: 'torchvision',
     subtitle: 'Deep Learning para Visión por Computadora',
     description:
