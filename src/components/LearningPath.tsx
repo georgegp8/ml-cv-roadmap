@@ -9,13 +9,14 @@ interface LearningPathProps {
 export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
   // Helper to calculate path coordinates
   const getPathCoordinates = () => {
-    const points: { x: number; y: number }[] = [];
+    const points: { x: number; y: number; isStart?: boolean }[] = [];
     const stageHeight = 180;
-    const svgWidth = 800; // Approximate SVG width
+    const svgWidth = 800;
+    const nodeRadius = 40; // Radio del círculo del nodo
     
     for (let i = 0; i < totalStages; i++) {
-      const y = i * stageHeight + 90;
-      let xPercent = 50; // Center by default
+      const centerY = i * stageHeight + 90;
+      let xPercent = 50;
       
       // Desktop S-curve pattern
       const pos = i % 4;
@@ -24,9 +25,18 @@ export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
       else if (pos === 2) xPercent = 50;
       else if (pos === 3) xPercent = 25;
       
-      // Convert percentage to actual pixel value
       const x = (xPercent / 100) * svgWidth;
-      points.push({ x, y });
+      
+      // Para el primer nodo, empezar desde el borde inferior
+      if (i === 0) {
+        points.push({ x, y: centerY + nodeRadius, isStart: true });
+      } else {
+        // Para los demás nodos, agregar dos puntos: entrada (arriba) y salida (abajo)
+        points.push({ x, y: centerY - nodeRadius }); // Entrada por arriba
+        if (i < totalStages - 1) {
+          points.push({ x, y: centerY + nodeRadius }); // Salida por abajo
+        }
+      }
     }
     
     return points;
@@ -34,16 +44,18 @@ export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
   
   const pathPoints = getPathCoordinates();
   
-  // Construir path con curvas suaves usando Cubic Bezier (C command)
+  // Construir path con curvas suaves usando Cubic Bezier
   const pathData = pathPoints.map((point, index) => {
     if (index === 0) {
       return `M ${point.x} ${point.y}`;
     }
     
     const prevPoint = pathPoints[index - 1];
-    const controlPointOffset = 60; // Distancia del control point
+    const deltaY = point.y - prevPoint.y;
     
-    // Control points para crear curvas suaves
+    // Control points para curvas suaves
+    const controlPointOffset = deltaY * 0.5;
+    
     const cp1x = prevPoint.x;
     const cp1y = prevPoint.y + controlPointOffset;
     const cp2x = point.x;
