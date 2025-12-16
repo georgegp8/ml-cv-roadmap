@@ -9,7 +9,7 @@ interface LearningPathProps {
 export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
   // Helper to calculate path coordinates
   const getPathCoordinates = () => {
-    const points: string[] = [];
+    const points: { x: string; y: number }[] = [];
     const stageHeight = 180;
     
     for (let i = 0; i < totalStages; i++) {
@@ -23,13 +23,21 @@ export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
       else if (pos === 2) x = 50;
       else if (pos === 3) x = 25;
       
-      points.push(`${x}% ${y}px`);
+      points.push({ x: `${x}%`, y });
     }
     
     return points;
   };
   
   const pathPoints = getPathCoordinates();
+  
+  // Construir el path correctamente
+  const pathData = pathPoints.map((point, index) => {
+    if (index === 0) {
+      return `M ${point.x} ${point.y}`;
+    }
+    return `L ${point.x} ${point.y}`;
+  }).join(' ');
   
   return (
     <svg 
@@ -45,7 +53,7 @@ export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
       
       {/* Draw dotted path connecting nodes */}
       <path
-        d={`M ${pathPoints.join(' L ')}`}
+        d={pathData}
         stroke="url(#pathGradient)"
         strokeWidth="3"
         strokeDasharray="10,10"
@@ -55,7 +63,7 @@ export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
       
       {/* Glow effect */}
       <path
-        d={`M ${pathPoints.join(' L ')}`}
+        d={pathData}
         stroke="#ff6b35"
         strokeWidth="6"
         strokeDasharray="10,10"

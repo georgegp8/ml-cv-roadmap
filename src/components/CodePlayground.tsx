@@ -136,10 +136,10 @@ sys.stdout = StringIO()
           </button>
           <button
             onClick={runCode}
-            disabled={isLoading || !pyodideReady}
+            disabled={isLoading}
             className={`
               px-4 py-2 rounded flex items-center gap-2 text-xs font-semibold transition-all
-              ${isLoading || !pyodideReady
+              ${isLoading
                 ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                 : 'bg-retro-orange text-black hover:bg-white'
               }
