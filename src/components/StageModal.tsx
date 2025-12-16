@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Play, Code, BookOpen, CheckCircle } from 'lucide-react';
 import { Stage } from '../data/curriculum';
-import { Button } from './ui/Button';
-import { Badge } from './ui/Badge';
-import { CodeBlock } from './CodeBlock';
 
 interface StageModalProps {
   stage: Stage | null;
@@ -21,137 +20,207 @@ export const StageModal: React.FC<StageModalProps> = ({
   onComplete,
   isCompleted,
 }) => {
-  if (!isOpen || !stage) return null;
+  const [activeTab, setActiveTab] = useState<'overview' | 'code' | 'demo'>('overview');
+  
+  if (!stage) return null;
   
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="bg-retro-black border-4 border-retro-orange w-full max-w-4xl max-h-[90vh] overflow-y-auto pixel-corners">
-        {/* Header */}
-        <div className="sticky top-0 bg-retro-orange p-6 border-b-4 border-black z-10">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8">
+          {/* Backdrop */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          />
+          
+          {/* Modal Content */}
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="relative w-full max-w-4xl h-[80vh] bg-retro-black border-4 border-retro-orange flex flex-col overflow-hidden shadow-[0_0_50px_rgba(255,107,53,0.2)]"
+            style={{ borderRadius: '12px' }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b-4 border-retro-gray bg-retro-gray/20">
+              <div className="flex items-center gap-4">
                 <span className="text-4xl">{stage.icon}</span>
                 <div>
-                  <h2 className="font-pixel text-xl text-black">{stage.title}</h2>
-                  <p className="text-sm text-black/80 mt-1">{stage.subtitle}</p>
+                  <h2 className="text-xl md:text-2xl font-pixel text-retro-orange">{stage.title}</h2>
+                  <p className="text-gray-400 font-mono text-sm">{stage.subtitle}</p>
                 </div>
               </div>
-              <div className="flex gap-2 mt-3">
-                <Badge variant={isCompleted ? 'success' : 'default'}>
-                  {isCompleted ? '✓ Completado' : stage.duration}
-                </Badge>
-              </div>
+              <button 
+                onClick={onClose}
+                className="p-2 hover:bg-retro-orange hover:text-black transition-colors rounded"
+              >
+                <X size={24} />
+              </button>
             </div>
-            <button
-              onClick={onClose}
-              className="text-black hover:text-retro-black text-2xl font-bold ml-4"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-        
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Description */}
-          <div>
-            <p className="text-gray-300 leading-relaxed">{stage.description}</p>
-          </div>
-          
-          {/* Objectives */}
-          <div>
-            <h3 className="font-pixel text-sm text-retro-orange mb-3">
-              🎯 OBJETIVOS
-            </h3>
-            <ul className="space-y-2">
-              {stage.objectives.map((obj, idx) => (
-                <li key={idx} className="flex items-start gap-2 text-gray-300">
-                  <span className="text-retro-orange mt-1">▸</span>
-                  <span>{obj}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Key Topics */}
-          <div>
-            <h3 className="font-pixel text-sm text-retro-orange mb-3">
-              📚 TEMAS CLAVE
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {stage.keyTopics.map((topic, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1 bg-retro-gray text-gray-300 text-sm rounded"
+            
+            {/* Tabs */}
+            <div className="flex border-b-4 border-retro-gray bg-retro-black">
+              {[
+                { id: 'overview', label: 'Overview', icon: BookOpen },
+                { id: 'code', label: 'Code', icon: Code },
+                { id: 'demo', label: 'Visuals', icon: Play },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`
+                    flex-1 py-4 flex items-center justify-center gap-2 font-pixel text-xs md:text-sm transition-colors
+                    ${activeTab === tab.id 
+                      ? 'bg-retro-orange text-black' 
+                      : 'bg-retro-black text-gray-500 hover:text-white hover:bg-retro-gray'
+                    }
+                  `}
                 >
-                  {topic}
-                </span>
+                  <tab.icon size={16} />
+                  {tab.label}
+                </button>
               ))}
             </div>
-          </div>
-          
-          {/* Practical Examples */}
-          <div>
-            <h3 className="font-pixel text-sm text-retro-orange mb-3">
-              💻 EJEMPLOS PRÁCTICOS
-            </h3>
-            {stage.practicalExamples.map((example, idx) => (
-              <div key={idx} className="mb-6">
-                <h4 className="text-white font-semibold mb-2">{example.title}</h4>
-                <CodeBlock 
-                  code={example.code} 
-                  language="python"
-                  title={example.title}
-                />
-                <p className="text-gray-400 text-sm mt-2 italic">
-                  💡 {example.explanation}
-                </p>
-              </div>
-            ))}
-          </div>
-          
-          {/* Resources */}
-          <div>
-            <h3 className="font-pixel text-sm text-retro-orange mb-3">
-              🔗 RECURSOS
-            </h3>
-            <ul className="space-y-2">
-              {stage.resources.map((resource, idx) => (
-                <li key={idx}>
-                  <a
-                    href={resource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-retro-orange hover:underline flex items-center gap-2"
-                  >
-                    <span>→</span>
-                    {resource.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-retro-gray">
-            {!isCompleted && (
-              <Button
-                variant="primary"
+            
+            {/* Content Area */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-retro-black custom-scrollbar">
+              {activeTab === 'overview' && (
+                <div className="space-y-8 animate-in fade-in duration-300">
+                  <div>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Mission Briefing</h3>
+                    <p className="text-gray-300 leading-relaxed text-lg">{stage.description}</p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Objectives</h3>
+                    <ul className="space-y-3">
+                      {stage.objectives.map((obj, idx) => (
+                        <li key={idx} className="flex items-start gap-3 bg-retro-gray/30 p-3 rounded border border-retro-gray">
+                          <span className="text-retro-orange mt-1">▸</span>
+                          <span className="text-gray-300">{obj}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Key Concepts</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {stage.keyTopics.map((topic, idx) => (
+                        <div key={idx} className="flex items-center gap-3 bg-retro-gray/30 p-3 rounded border border-retro-gray">
+                          <div className="w-2 h-2 bg-retro-orange rounded-full flex-shrink-0" />
+                          <span className="text-gray-300 text-sm">{topic}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-retro-orange font-bold mb-4 text-lg border-b border-retro-gray pb-2">Resources</h3>
+                    <div className="space-y-2">
+                      {stage.resources.map((resource, idx) => (
+                        <a
+                          key={idx}
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-retro-orange hover:text-white hover:underline transition-colors p-2 hover:bg-retro-gray/20 rounded"
+                        >
+                          <span>→</span>
+                          <span>{resource.title}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mt-8 p-4 bg-retro-gray/20 rounded border border-retro-gray">
+                    <span>⏱️ Estimated Time:</span>
+                    <span className="text-white font-semibold">{stage.duration}</span>
+                  </div>
+                </div>
+              )}
+              
+              {activeTab === 'code' && (
+                <div className="space-y-8 animate-in fade-in duration-300">
+                  {stage.practicalExamples.map((example, idx) => (
+                    <div key={idx} className="space-y-2">
+                      <h4 className="text-retro-orange font-bold text-lg mb-3">{example.title}</h4>
+                      <div className="bg-[#1e1e1e] p-4 rounded border-2 border-retro-orange/30 font-mono text-sm overflow-x-auto">
+                        <pre className="text-gray-300">
+                          <code>{example.code}</code>
+                        </pre>
+                      </div>
+                      <p className="text-gray-400 text-sm italic bg-retro-gray/20 p-3 rounded border-l-4 border-retro-orange">
+                        💡 {example.explanation}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {activeTab === 'demo' && (
+                <div className="flex flex-col items-center justify-center h-full animate-in fade-in duration-300 text-center">
+                  <div className="w-full max-w-2xl aspect-video bg-retro-gray rounded-lg flex items-center justify-center border-2 border-dashed border-retro-orange/50 mb-6">
+                    <div className="text-center p-8">
+                      <span className="text-6xl mb-4 block">{stage.icon}</span>
+                      <span className="text-gray-500 font-pixel text-xs">Visual Demo Placeholder</span>
+                    </div>
+                  </div>
+                  <p className="text-gray-400 max-w-md text-lg">
+                    Interactive visualizations and model outputs would appear here, showing real-time processing results for <span className="text-retro-orange">{stage.title}</span>.
+                  </p>
+                  <div className="mt-8 p-4 bg-retro-gray/20 rounded border border-retro-gray max-w-md">
+                    <p className="text-sm text-gray-400">
+                      This section would include live demos of {stage.subtitle.toLowerCase()} techniques and visual outputs from the code examples.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Footer Actions */}
+            <div className="p-6 border-t-4 border-retro-gray bg-retro-black flex justify-between items-center">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+              >
+                ← Back to Roadmap
+              </button>
+              <button
                 onClick={() => {
                   onComplete(stage.id);
                   onClose();
                 }}
+                disabled={isCompleted}
+                className={`
+                  px-6 py-3 font-pixel text-sm flex items-center gap-2 transition-all
+                  ${isCompleted 
+                    ? 'bg-green-600 text-white cursor-default' 
+                    : 'bg-retro-orange text-black hover:bg-white hover:scale-105'
+                  }
+                `}
+                style={{ borderRadius: '4px' }}
               >
-                ✓ Marcar como Completado
-              </Button>
-            )}
-            <Button variant="secondary" onClick={onClose}>
-              Cerrar
-            </Button>
-          </div>
+                {isCompleted ? (
+                  <>
+                    <CheckCircle size={18} />
+                    Mission Complete
+                  </>
+                ) : (
+                  <>
+                    Complete Mission
+                    <span className="animate-pulse">_</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 };
