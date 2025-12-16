@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Play, Code, BookOpen, CheckCircle } from 'lucide-react';
 import { Stage } from '../data/curriculum';
 import { CodePlayground } from './CodePlayground';
+import { StageIcon } from './StageIcon';
 
 interface StageModalProps {
   stage: Stage | null;
@@ -56,7 +57,7 @@ export const StageModal: React.FC<StageModalProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b-4 border-retro-gray bg-retro-gray/20">
               <div className="flex items-center gap-4">
-                <span className="text-4xl">{stage.icon}</span>
+                <StageIcon stageId={stage.id} size={64} />
                 <div>
                   <h2 className="text-xl md:text-2xl font-pixel text-retro-orange">{stage.title}</h2>
                   <p className="text-gray-400 font-mono text-sm">{stage.subtitle}</p>
@@ -183,7 +184,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                     <div className="space-y-4">
                       <div className="bg-retro-orange/10 border-l-4 border-retro-orange p-3 rounded">
                         <p className="text-sm text-gray-300">
-                          ⚡ <strong>Try it live!</strong> Edit and run Python code directly in your browser.
+                          ⚡ <strong>¡Pruébalo en vivo!</strong> Edita y ejecuta código Python directamente en tu navegador.
                         </p>
                       </div>
                       

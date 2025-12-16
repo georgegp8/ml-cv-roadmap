@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Badge } from './ui/Badge';
+import { StageIcon } from './StageIcon';
 
 interface PathNodeProps {
   id: string;
@@ -15,6 +16,7 @@ interface PathNodeProps {
 }
 
 export const PathNode: React.FC<PathNodeProps> = ({
+  id,
   icon,
   title,
   status,
@@ -70,7 +72,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
           `}
           onClick={canClick ? onClick : undefined}
         >
-          <span className="text-3xl">{icon}</span>
+          <StageIcon stageId={id} size={48} />
           
           {/* Completion checkmark */}
           {status === 'completed' && (

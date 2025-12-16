@@ -512,136 +512,131 @@ with torch.no_grad():
     ],
   },
   {
-    id: 'torchvision',
-    icon: '�️‍🗨️',
-    title: 'torchvision',
-    subtitle: 'Deep Learning para Visión por Computadora',
+    id: 'yolo',
+    icon: '🎯',
+    title: 'YOLO',
+    subtitle: 'Detección de Objetos en Tiempo Real',
     description:
-      'Domina torchvision para aplicar Deep Learning a visión por computadora: CNNs, transfer learning con modelos pre-entrenados, data augmentation y detección de objetos.',
+      'Domina YOLO (You Only Look Once), el algoritmo líder en detección de objetos en tiempo real. Aprende a entrenar modelos para detectar y clasificar objetos con alta velocidad y precisión.',
     duration: '4-6 semanas',
     objectives: [
-      'Construir y entrenar CNNs desde cero',
-      'Usar transfer learning con modelos pre-entrenados',
-      'Aplicar data augmentation efectivamente',
-      'Implementar clasificación, segmentación y detección',
+      'Entender arquitecturas YOLO (YOLOv5, YOLOv8)',
+      'Entrenar modelos YOLO personalizados',
+      'Optimizar detección para tiempo real',
+      'Implementar detección en imágenes y video',
     ],
     keyTopics: [
-      'Convolutional Neural Networks (CNNs)',
-      'Capas convolucionales y pooling',
-      'Arquitecturas clásicas (ResNet, VGG, EfficientNet)',
-      'Transfer learning y fine-tuning',
-      'Data augmentation (transforms)',
-      'Clasificación de imágenes',
-      'Detección de objetos (YOLO, Faster R-CNN)',
-      'Segmentación semántica',
+      'Arquitectura YOLO y evolución',
+      'Detección en una sola pasada (Single-shot detection)',
+      'Anchor boxes y predicción de bounding boxes',
+      'Non-Maximum Suppression (NMS)',
+      'Entrenamiento con datasets personalizados',
+      'Transfer learning con modelos pre-entrenados',
+      'Optimización para velocidad vs precisión',
+      'Implementación en producción',
     ],
     practicalExamples: [
       {
-        title: 'CNN para Clasificación',
-        code: `import torch
-import torch.nn as nn
-import torchvision.transforms as transforms
+        title: 'Detección con YOLOv8',
+        code: `from ultralytics import YOLO
+import cv2
 
-class CNN(nn.Module):
-    def __init__(self, num_classes=10):
-        super(CNN, self).__init__()
-        self.conv_layers = nn.Sequential(
-            nn.Conv2d(3, 32, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2, 2),
-        )
-        self.fc_layers = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(128 * 4 * 4, 256),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(256, num_classes)
-        )
+# Cargar modelo pre-entrenado YOLOv8
+model = YOLO('yolov8n.pt')  # n=nano, s=small, m=medium, l=large, x=xlarge
+
+# Realizar detección en una imagen
+results = model('imagen.jpg')
+
+# Procesar resultados
+for result in results:
+    boxes = result.boxes  # Bounding boxes
+    for box in boxes:
+        # Obtener coordenadas y confianza
+        x1, y1, x2, y2 = box.xyxy[0]
+        conf = box.conf[0]
+        cls = box.cls[0]
+        
+        print(f"Clase: {model.names[int(cls)]}")
+        print(f"Confianza: {conf:.2f}")
+        print(f"Box: [{x1:.0f}, {y1:.0f}, {x2:.0f}, {y2:.0f}]")
+
+# Mostrar imagen con detecciones
+annotated = results[0].plot()
+cv2.imshow('YOLOv8', annotated)
+cv2.waitKey(0)`,
+        explanation:
+          'YOLOv8 de Ultralytics es extremadamente fácil de usar y ofrece excelente balance entre velocidad y precisión.',
+      },
+      {
+        title: 'Entrenar YOLO Personalizado',
+        code: `from ultralytics import YOLO
+
+# Cargar modelo base
+model = YOLO('yolov8n.pt')
+
+# Entrenar con tu dataset
+# Dataset debe estar en formato YOLO (txt con: clase x_center y_center width height)
+results = model.train(
+    data='mi_dataset.yaml',  # Configuración del dataset
+    epochs=100,
+    imgsz=640,
+    batch=16,
+    name='mi_detector',
+    patience=50,  # Early stopping
+    save=True,
+    device=0  # GPU 0, o 'cpu' para CPU
+)
+
+# Validar modelo entrenado
+metrics = model.val()
+print(f"mAP50: {metrics.box.map50:.3f}")
+print(f"mAP50-95: {metrics.box.map:.3f}")
+
+# Exportar modelo optimizado
+model.export(format='onnx')  # Para producción`,
+        explanation:
+          'Entrenar YOLO con tus propios datos es sencillo. El formato YOLO facilita la anotación de datasets.',
+      },
+      {
+        title: 'Detección en Video en Tiempo Real',
+        code: `from ultralytics import YOLO
+import cv2
+
+# Cargar modelo
+model = YOLO('yolov8n.pt')
+
+# Abrir video o webcam (0 para webcam)
+cap = cv2.VideoCapture('video.mp4')  # o VideoCapture(0)
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
     
-    def forward(self, x):
-        x = self.conv_layers(x)
-        x = self.fc_layers(x)
-        return x
+    # Realizar detección
+    results = model(frame, stream=True)
+    
+    # Dibujar resultados
+    for result in results:
+        annotated = result.plot()
+        cv2.imshow('YOLO Real-time', annotated)
+    
+    # Presiona 'q' para salir
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
-model = CNN(num_classes=10)`,
+cap.release()
+cv2.destroyAllWindows()
+
+print("FPS promedio:", cap.get(cv2.CAP_PROP_FPS))`,
         explanation:
-          'Las CNNs son el estándar para visión por computadora. Capas conv extraen características jerárquicas.',
-      },
-      {
-        title: 'Transfer Learning con ResNet',
-        code: `import torch
-import torchvision.models as models
-import torch.nn as nn
-
-# Cargar ResNet pre-entrenado en ImageNet
-model = models.resnet50(pretrained=True)
-
-# Congelar parámetros del backbone
-for param in model.parameters():
-    param.requires_grad = False
-
-# Reemplazar última capa para nuestro problema
-num_features = model.fc.in_features
-model.fc = nn.Linear(num_features, num_classes)
-
-# Solo entrenar la última capa
-optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
-
-# Data augmentation
-transform = transforms.Compose([
-    transforms.RandomResizedCrop(224),
-    transforms.RandomHorizontalFlip(),
-    transforms.ColorJitter(brightness=0.2, contrast=0.2),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                         std=[0.229, 0.224, 0.225])
-])`,
-        explanation:
-          'Transfer learning permite usar conocimiento de ImageNet en tus problemas. Ahorra tiempo y datos.',
-      },
-      {
-        title: 'Detección de Objetos',
-        code: `import torchvision
-from torchvision.models.detection import fasterrcnn_resnet50_fpn
-from PIL import Image
-
-# Cargar modelo pre-entrenado
-model = fasterrcnn_resnet50_fpn(pretrained=True)
-model.eval()
-
-# Cargar y preprocesar imagen
-img = Image.open('street.jpg')
-transform = transforms.ToTensor()
-img_tensor = transform(img).unsqueeze(0)
-
-# Inferencia
-with torch.no_grad():
-    predictions = model(img_tensor)
-
-# Extraer resultados
-boxes = predictions[0]['boxes']
-labels = predictions[0]['labels']
-scores = predictions[0]['scores']
-
-# Filtrar predicciones con score > 0.8
-for box, label, score in zip(boxes, labels, scores):
-    if score > 0.8:
-        print(f"Objeto: {label}, Score: {score:.2f}")
-        print(f"Box: {box}")`,
-        explanation:
-          'Faster R-CNN es uno de los detectores más precisos. torchvision incluye modelos pre-entrenados listos.',
+          'YOLO es ideal para detección en tiempo real. Procesa video frame por frame con alta velocidad.',
       },
     ],
     resources: [
-      { title: 'torchvision Documentation', url: 'https://pytorch.org/vision/stable/index.html' },
-      { title: 'Transfer Learning Tutorial', url: 'https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html' },
-      { title: 'Computer Vision with PyTorch', url: 'https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html' },
+      { title: 'Ultralytics YOLOv8 Documentation', url: 'https://docs.ultralytics.com/' },
+      { title: 'YOLO GitHub Repository', url: 'https://github.com/ultralytics/ultralytics' },
+      { title: 'Train Custom YOLO Model', url: 'https://docs.ultralytics.com/modes/train/' },
     ],
   },
 ];
