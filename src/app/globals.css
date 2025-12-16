@@ -1,26 +1,91 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --retro-black: #0a0a0a;
+  --retro-orange: #ff6b35;
+  --retro-orange-dim: #cc552a;
+  --retro-gray: #2a2a2a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-retro-black: var(--retro-black);
+  --color-retro-orange: var(--retro-orange);
+  --color-retro-orange-dim: var(--retro-orange-dim);
+  --color-retro-gray: var(--retro-gray);
+  --font-pixel: var(--font-press-start);
+  --font-mono: var(--font-space-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--retro-black);
+  color: white;
+  font-family: var(--font-space-mono), monospace;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--retro-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--retro-gray);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--retro-orange);
+}
+
+/* Pixel Art Utilities */
+.font-pixel {
+  font-family: var(--font-press-start), cursive;
+}
+
+.pixel-border {
+  box-shadow: 
+    -4px 0 0 0 var(--retro-black),
+    4px 0 0 0 var(--retro-black),
+    0 -4px 0 0 var(--retro-black),
+    0 4px 0 0 var(--retro-black),
+    0 0 0 4px var(--retro-orange);
+}
+
+.pixel-border-sm {
+  box-shadow: 
+    -2px 0 0 0 var(--retro-black),
+    2px 0 0 0 var(--retro-black),
+    0 -2px 0 0 var(--retro-black),
+    0 2px 0 0 var(--retro-black),
+    0 0 0 2px var(--retro-orange);
+}
+
+.pixel-corners {
+  clip-path: polygon(
+    0px 10px, 4px 10px, 4px 4px, 10px 4px, 10px 0px,
+    calc(100% - 10px) 0px, calc(100% - 10px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 10px, 100% 10px,
+    100% calc(100% - 10px), calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px), calc(100% - 10px) 100%,
+    10px 100%, 10px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 10px), 0px calc(100% - 10px)
+  );
+}
+
+.scanline {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.2) 50%,
+    rgba(0,0,0,0.2)
+  );
+  background-size: 100% 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
 }
