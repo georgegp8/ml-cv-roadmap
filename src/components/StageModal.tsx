@@ -163,20 +163,81 @@ export const StageModal: React.FC<StageModalProps> = ({
               )}
               
               {activeTab === 'demo' && (
-                <div className="flex flex-col items-center justify-center h-full animate-in fade-in duration-300 text-center">
-                  <div className="w-full max-w-2xl aspect-video bg-retro-gray rounded-lg flex items-center justify-center border-2 border-dashed border-retro-orange/50 mb-6">
-                    <div className="text-center p-8">
-                      <span className="text-6xl mb-4 block">{stage.icon}</span>
-                      <span className="text-gray-500 font-pixel text-xs">Visual Demo Placeholder</span>
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  <div className="text-center mb-8">
+                    <span className="text-6xl mb-4 block">{stage.icon}</span>
+                    <h3 className="text-2xl font-bold text-retro-orange mb-2">{stage.title}</h3>
+                    <p className="text-gray-400">{stage.subtitle}</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Visual Concepts */}
+                    <div className="bg-retro-gray/20 p-6 rounded-lg border-2 border-retro-orange/30">
+                      <h4 className="text-retro-orange font-bold mb-4 flex items-center gap-2">
+                        <span>🎯</span> Conceptos Visuales
+                      </h4>
+                      <ul className="space-y-3">
+                        {stage.keyTopics.slice(0, 4).map((topic, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
+                            <span className="text-retro-orange mt-1">▸</span>
+                            <span>{topic}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    {/* Applications */}
+                    <div className="bg-retro-gray/20 p-6 rounded-lg border-2 border-retro-orange/30">
+                      <h4 className="text-retro-orange font-bold mb-4 flex items-center gap-2">
+                        <span>💡</span> Aplicaciones
+                      </h4>
+                      <div className="space-y-3">
+                        {stage.objectives.slice(0, 3).map((obj, idx) => (
+                          <div key={idx} className="bg-retro-black/40 p-3 rounded border border-retro-gray">
+                            <p className="text-gray-300 text-sm">{obj}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <p className="text-gray-400 max-w-md text-lg">
-                    Interactive visualizations and model outputs would appear here, showing real-time processing results for <span className="text-retro-orange">{stage.title}</span>.
-                  </p>
-                  <div className="mt-8 p-4 bg-retro-gray/20 rounded border border-retro-gray max-w-md">
-                    <p className="text-sm text-gray-400">
-                      This section would include live demos of {stage.subtitle.toLowerCase()} techniques and visual outputs from the code examples.
-                    </p>
+                  
+                  {/* Example Outputs */}
+                  <div className="bg-gradient-to-br from-retro-gray/30 to-retro-black p-8 rounded-lg border-2 border-retro-orange/20">
+                    <h4 className="text-retro-orange font-bold mb-4 text-center">
+                      📊 Ejemplo de Resultados
+                    </h4>
+                    <div className="bg-retro-black/60 p-6 rounded border border-retro-gray/50">
+                      <pre className="text-green-400 font-mono text-xs overflow-x-auto">
+{`>>> import ${stage.id.includes('numpy') ? 'numpy as np' : stage.id.includes('pandas') ? 'pandas as pd' : stage.id.includes('opencv') ? 'cv2' : stage.id.includes('torch') ? 'torch' : 'sklearn'}
+>>> # Procesando datos...
+>>> print("✓ ${stage.title} - Ejecutado exitosamente")
+✓ ${stage.title} - Ejecutado exitosamente
+
+>>> # Output:
+${stage.id === 'python-basics' ? '>>> [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]' :
+  stage.id === 'numpy-matplotlib' ? '>>> Array shape: (100, 100, 3)\n>>> Mean: 127.5, Std: 73.9' :
+  stage.id === 'pandas' ? '>>> DataFrame loaded: 1000 rows × 15 columns\n>>> Missing values: 23' :
+  stage.id === 'scikit-learn' ? '>>> Model trained successfully\n>>> Accuracy: 0.94 | Precision: 0.92' :
+  stage.id === 'opencv' ? '>>> Image processed: 1920x1080\n>>> Faces detected: 3' :
+  stage.id === 'pytorch' ? '>>> Epoch [10/10] Loss: 0.023\n>>> Model saved to checkpoint.pth' :
+  '>>> Model inference complete\n>>> Objects detected: 5 (confidence > 0.85)'}
+
+>>> print("Listo para producción! 🚀")
+Listo para producción! 🚀`}
+                      </pre>
+                    </div>
+                  </div>
+                  
+                  {/* Quick Tips */}
+                  <div className="bg-retro-orange/10 border-l-4 border-retro-orange p-4 rounded">
+                    <h4 className="text-retro-orange font-bold mb-2 flex items-center gap-2">
+                      <span>⚡</span> Pro Tips
+                    </h4>
+                    <ul className="space-y-2 text-sm text-gray-300">
+                      <li>• Practica con datasets reales desde el inicio</li>
+                      <li>• Documenta tu código para referencia futura</li>
+                      <li>• Consulta la documentación oficial regularmente</li>
+                    </ul>
                   </div>
                 </div>
               )}
