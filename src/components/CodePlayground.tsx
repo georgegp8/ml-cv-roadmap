@@ -25,17 +25,42 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
     const loadPyodide = async () => {
       try {
         setIsLoading(true);
-        // @ts-ignore
-        const pyodide = await window.loadPyodide({
-          indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
-        });
-        pyodideRef.current = pyodide;
-        setPyodideReady(true);
-        setOutput('✓ Python ready! Click "Run Code" to execute.\n');
+        setOutput('Loading Python environment...\n');
+        
+        // Cargar el script de Pyodide dinámicamente
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
+        script.async = true;
+        
+        script.onload = async () => {
+          try {
+            // @ts-ignore
+            if (typeof window.loadPyodide === 'function') {
+              // @ts-ignore
+              const pyodide = await window.loadPyodide({
+                indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
+              });
+              pyodideRef.current = pyodide;
+              setPyodideReady(true);
+              setOutput('✓ Python ready! Click "Run Code" to execute.\n');
+            }
+          } catch (err) {
+            console.error('Error initializing Pyodide:', err);
+            setOutput('Error initializing Python. Please refresh the page.');
+          } finally {
+            setIsLoading(false);
+          }
+        };
+        
+        script.onerror = () => {
+          setOutput('Error loading Python environment. Please check your internet connection.');
+          setIsLoading(false);
+        };
+        
+        document.head.appendChild(script);
       } catch (error) {
         setOutput('Error loading Python environment. Please refresh the page.');
         console.error('Pyodide loading error:', error);
-      } finally {
         setIsLoading(false);
       }
     };
