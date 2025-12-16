@@ -15,63 +15,68 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
   title = 'Python Playground' 
 }) => {
   const [code, setCode] = useState(initialCode);
-  const [output, setOutput] = useState('');
+  const [output, setOutput] = useState('Click "Run Code" to execute Python code in your browser.');
   const [isLoading, setIsLoading] = useState(false);
   const [pyodideReady, setPyodideReady] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pyodideRef = useRef<any>(null);
+  const loadingRef = useRef(false);
 
-  // Cargar Pyodide cuando el componente se monta
+  // Verificar que estamos en el cliente
   useEffect(() => {
-    const loadPyodide = async () => {
-      try {
-        setIsLoading(true);
-        setOutput('Loading Python environment...\n');
-        
-        // Cargar el script de Pyodide dinámicamente
+    setMounted(true);
+  }, []);
+
+  // Cargar Pyodide solo cuando el usuario haga click por primera vez
+  const loadPyodide = async () => {
+    if (loadingRef.current || pyodideRef.current) return;
+    
+    loadingRef.current = true;
+    setIsLoading(true);
+    setOutput('Loading Python environment (first time only, ~10 seconds)...\n');
+    
+    try {
+      // Verificar si ya existe el script
+      if (!document.getElementById('pyodide-script')) {
         const script = document.createElement('script');
+        script.id = 'pyodide-script';
         script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
         script.async = true;
         
-        script.onload = async () => {
-          try {
-            // @ts-ignore
-            if (typeof window.loadPyodide === 'function') {
-              // @ts-ignore
-              const pyodide = await window.loadPyodide({
-                indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
-              });
-              pyodideRef.current = pyodide;
-              setPyodideReady(true);
-              setOutput('✓ Python ready! Click "Run Code" to execute.\n');
-            }
-          } catch (err) {
-            console.error('Error initializing Pyodide:', err);
-            setOutput('Error initializing Python. Please refresh the page.');
-          } finally {
-            setIsLoading(false);
-          }
-        };
-        
-        script.onerror = () => {
-          setOutput('Error loading Python environment. Please check your internet connection.');
-          setIsLoading(false);
-        };
-        
-        document.head.appendChild(script);
-      } catch (error) {
-        setOutput('Error loading Python environment. Please refresh the page.');
-        console.error('Pyodide loading error:', error);
-        setIsLoading(false);
+        await new Promise<void>((resolve, reject) => {
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('Failed to load Pyodide script'));
+          document.head.appendChild(script);
+        });
       }
-    };
-
-    loadPyodide();
-  }, []);
+      
+      // @ts-ignore
+      if (typeof window.loadPyodide === 'function') {
+        // @ts-ignore
+        const pyodide = await window.loadPyodide({
+          indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
+        });
+        pyodideRef.current = pyodide;
+        setPyodideReady(true);
+        setOutput('✓ Python ready! Running your code...\n');
+        return true;
+      }
+    } catch (error: any) {
+      console.error('Error loading Pyodide:', error);
+      setOutput(`Error loading Python: ${error.message}\nPlease refresh the page and try again.`);
+      setIsLoading(false);
+      loadingRef.current = false;
+      return false;
+    }
+    
+    return true;
+  };
 
   const runCode = async () => {
+    // Cargar Pyodide si no está listo
     if (!pyodideRef.current) {
-      setOutput('Python environment not ready yet. Please wait...');
-      return;
+      const loaded = await loadPyodide();
+      if (!loaded) return;
     }
 
     setIsLoading(true);
@@ -101,8 +106,20 @@ sys.stdout = StringIO()
 
   const resetCode = () => {
     setCode(initialCode);
-    setOutput('✓ Code reset to original example.\n');
+    setOutput(pyodideReady 
+      ? '✓ Code reset to original example. Click "Run Code" to execute.\n'
+      : 'Click "Run Code" to execute Python code in your browser.'
+    );
   };
+
+  if (!mounted) {
+    return (
+      <div className="bg-retro-black border-2 border-retro-orange/30 rounded-lg overflow-hidden p-8 text-center">
+        <Loader2 className="animate-spin mx-auto mb-2 text-retro-orange" size={24} />
+        <p className="text-gray-400 text-sm">Loading editor...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-retro-black border-2 border-retro-orange/30 rounded-lg overflow-hidden">
