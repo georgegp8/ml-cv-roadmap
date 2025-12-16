@@ -126,3 +126,15 @@ body {
 .fade-in {
   animation-name: fade-in;
 }
+
+/* Retro background utilities */
+.retro-grid {
+  background-image: 
+    linear-gradient(rgba(255, 107, 53, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 107, 53, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.retro-vignette {
+  background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+}
