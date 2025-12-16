@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Play, Code, BookOpen, CheckCircle } from 'lucide-react';
 import { Stage } from '../data/curriculum';
+import { CodePlayground } from './CodePlayground';
 
 interface StageModalProps {
   stage: Stage | null;
@@ -164,79 +165,66 @@ export const StageModal: React.FC<StageModalProps> = ({
               
               {activeTab === 'demo' && (
                 <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="text-center mb-8">
-                    <span className="text-6xl mb-4 block">{stage.icon}</span>
-                    <h3 className="text-2xl font-bold text-retro-orange mb-2">{stage.title}</h3>
-                    <p className="text-gray-400">{stage.subtitle}</p>
+                  <div className="text-center mb-6">
+                    <span className="text-5xl mb-3 block">{stage.icon}</span>
+                    <h3 className="text-xl font-bold text-retro-orange mb-1">{stage.title}</h3>
+                    <p className="text-gray-400 text-sm">Playground Interactivo</p>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Visual Concepts */}
-                    <div className="bg-retro-gray/20 p-6 rounded-lg border-2 border-retro-orange/30">
-                      <h4 className="text-retro-orange font-bold mb-4 flex items-center gap-2">
-                        <span>🎯</span> Conceptos Visuales
-                      </h4>
-                      <ul className="space-y-3">
-                        {stage.keyTopics.slice(0, 4).map((topic, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
-                            <span className="text-retro-orange mt-1">▸</span>
-                            <span>{topic}</span>
-                          </li>
-                        ))}
-                      </ul>
+                  {/* Interactive Code Playground */}
+                  {stage.practicalExamples.length > 0 && (
+                    <div className="space-y-4">
+                      <div className="bg-retro-orange/10 border-l-4 border-retro-orange p-3 rounded">
+                        <p className="text-sm text-gray-300">
+                          ⚡ <strong>Try it live!</strong> Edit and run Python code directly in your browser.
+                        </p>
+                      </div>
+                      
+                      <CodePlayground
+                        initialCode={stage.practicalExamples[0].code}
+                        title={`${stage.title} - ${stage.practicalExamples[0].title}`}
+                      />
+                      
+                      <div className="bg-retro-gray/20 p-4 rounded border border-retro-gray">
+                        <p className="text-gray-400 text-sm italic">
+                          💡 {stage.practicalExamples[0].explanation}
+                        </p>
+                      </div>
                     </div>
-                    
-                    {/* Applications */}
-                    <div className="bg-retro-gray/20 p-6 rounded-lg border-2 border-retro-orange/30">
-                      <h4 className="text-retro-orange font-bold mb-4 flex items-center gap-2">
-                        <span>💡</span> Aplicaciones
-                      </h4>
-                      <div className="space-y-3">
-                        {stage.objectives.slice(0, 3).map((obj, idx) => (
-                          <div key={idx} className="bg-retro-black/40 p-3 rounded border border-retro-gray">
-                            <p className="text-gray-300 text-sm">{obj}</p>
-                          </div>
+                  )}
+                  
+                  {/* Additional Examples */}
+                  {stage.practicalExamples.length > 1 && (
+                    <div className="mt-6">
+                      <h4 className="text-retro-orange font-bold mb-3">More Examples to Try:</h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        {stage.practicalExamples.slice(1).map((example, idx) => (
+                          <details key={idx} className="bg-retro-gray/20 p-4 rounded border border-retro-gray cursor-pointer">
+                            <summary className="font-semibold text-white hover:text-retro-orange">
+                              {example.title}
+                            </summary>
+                            <div className="mt-3">
+                              <CodePlayground
+                                initialCode={example.code}
+                                title={example.title}
+                              />
+                            </div>
+                          </details>
                         ))}
                       </div>
                     </div>
-                  </div>
+                  )}
                   
-                  {/* Example Outputs */}
-                  <div className="bg-gradient-to-br from-retro-gray/30 to-retro-black p-8 rounded-lg border-2 border-retro-orange/20">
-                    <h4 className="text-retro-orange font-bold mb-4 text-center">
-                      📊 Ejemplo de Resultados
-                    </h4>
-                    <div className="bg-retro-black/60 p-6 rounded border border-retro-gray/50">
-                      <pre className="text-green-400 font-mono text-xs overflow-x-auto">
-{`>>> import ${stage.id.includes('numpy') ? 'numpy as np' : stage.id.includes('pandas') ? 'pandas as pd' : stage.id.includes('opencv') ? 'cv2' : stage.id.includes('torch') ? 'torch' : 'sklearn'}
->>> # Procesando datos...
->>> print("✓ ${stage.title} - Ejecutado exitosamente")
-✓ ${stage.title} - Ejecutado exitosamente
-
->>> # Output:
-${stage.id === 'python-basics' ? '>>> [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]' :
-  stage.id === 'numpy-matplotlib' ? '>>> Array shape: (100, 100, 3)\n>>> Mean: 127.5, Std: 73.9' :
-  stage.id === 'pandas' ? '>>> DataFrame loaded: 1000 rows × 15 columns\n>>> Missing values: 23' :
-  stage.id === 'scikit-learn' ? '>>> Model trained successfully\n>>> Accuracy: 0.94 | Precision: 0.92' :
-  stage.id === 'opencv' ? '>>> Image processed: 1920x1080\n>>> Faces detected: 3' :
-  stage.id === 'pytorch' ? '>>> Epoch [10/10] Loss: 0.023\n>>> Model saved to checkpoint.pth' :
-  '>>> Model inference complete\n>>> Objects detected: 5 (confidence > 0.85)'}
-
->>> print("Listo para producción! 🚀")
-Listo para producción! 🚀`}
-                      </pre>
-                    </div>
-                  </div>
-                  
-                  {/* Quick Tips */}
-                  <div className="bg-retro-orange/10 border-l-4 border-retro-orange p-4 rounded">
+                  {/* Pro Tips */}
+                  <div className="bg-retro-orange/10 border-l-4 border-retro-orange p-4 rounded mt-6">
                     <h4 className="text-retro-orange font-bold mb-2 flex items-center gap-2">
-                      <span>⚡</span> Pro Tips
+                      <span>🚀</span> Pro Tips
                     </h4>
                     <ul className="space-y-2 text-sm text-gray-300">
-                      <li>• Practica con datasets reales desde el inicio</li>
-                      <li>• Documenta tu código para referencia futura</li>
-                      <li>• Consulta la documentación oficial regularmente</li>
+                      <li>• Modify the code and see instant results</li>
+                      <li>• Use print() to debug and understand the flow</li>
+                      <li>• Try different values to experiment</li>
+                      <li>• Click "Reset" to restore original code</li>
                     </ul>
                   </div>
                 </div>

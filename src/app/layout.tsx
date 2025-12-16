@@ -26,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+      </head>
       <body
         className={`${pressStart.variable} ${spaceMono.variable} antialiased`}
       >
