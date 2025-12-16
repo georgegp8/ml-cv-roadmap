@@ -55,6 +55,7 @@ export const StageIcon: React.FC<StageIconProps> = ({ stageId, size = 40, classN
         width={size}
         height={size}
         className="object-contain"
+        style={{ width: 'auto', height: 'auto' }}
         unoptimized
       />
     </div>

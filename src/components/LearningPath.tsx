@@ -34,12 +34,22 @@ export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
   
   const pathPoints = getPathCoordinates();
   
-  // Construir el path correctamente con valores numéricos
+  // Construir path con curvas suaves usando Cubic Bezier (C command)
   const pathData = pathPoints.map((point, index) => {
     if (index === 0) {
       return `M ${point.x} ${point.y}`;
     }
-    return `L ${point.x} ${point.y}`;
+    
+    const prevPoint = pathPoints[index - 1];
+    const controlPointOffset = 60; // Distancia del control point
+    
+    // Control points para crear curvas suaves
+    const cp1x = prevPoint.x;
+    const cp1y = prevPoint.y + controlPointOffset;
+    const cp2x = point.x;
+    const cp2y = point.y - controlPointOffset;
+    
+    return `C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${point.x} ${point.y}`;
   }).join(' ');
   
   return (
