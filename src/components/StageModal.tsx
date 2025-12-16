@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Play, Code, BookOpen, CheckCircle } from 'lucide-react';
 import { Stage } from '../data/curriculum';
@@ -22,6 +22,13 @@ export const StageModal: React.FC<StageModalProps> = ({
   isCompleted,
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'code' | 'demo'>('overview');
+  
+  // Reset tab to overview when stage changes
+  useEffect(() => {
+    if (stage) {
+      setActiveTab('overview');
+    }
+  }, [stage?.id]);
   
   if (!stage) return null;
   
