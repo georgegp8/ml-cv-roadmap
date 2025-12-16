@@ -33,7 +33,7 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
     
     loadingRef.current = true;
     setIsLoading(true);
-    setOutput('Loading Python environment (first time only, ~10 seconds)...\n');
+    setOutput('Loading Python environment (first time only, ~15-20 seconds)...\n');
     
     try {
       // Verificar si ya existe el script
@@ -56,9 +56,14 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
         const pyodide = await window.loadPyodide({
           indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
         });
+        
+        // Pre-instalar paquetes comunes de ML/CV disponibles en Pyodide
+        setOutput(prev => prev + 'Installing packages (numpy, matplotlib, scikit-learn, pandas)...\n');
+        await pyodide.loadPackage(['numpy', 'matplotlib', 'scikit-learn', 'pandas']);
+        
         pyodideRef.current = pyodide;
         setPyodideReady(true);
-        setOutput('✓ Python ready! Running your code...\n');
+        setOutput('✓ Python ready with ML libraries! Running your code...\n');
         return true;
       }
     } catch (error: any) {
