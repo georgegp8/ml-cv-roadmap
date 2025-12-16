@@ -173,11 +173,6 @@ export const StageModal: React.FC<StageModalProps> = ({
               
               {activeTab === 'demo' && (
                 <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="text-center mb-6">
-                    <span className="text-5xl mb-3 block">{stage.icon}</span>
-                    <h3 className="text-xl font-bold text-retro-orange mb-1">{stage.title}</h3>
-                    <p className="text-gray-400 text-sm">Playground Interactivo</p>
-                  </div>
                   
                   {/* Interactive Code Playground */}
                   {stage.practicalExamples.length > 0 && (
