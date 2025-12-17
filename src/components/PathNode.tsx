@@ -39,7 +39,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
       border: 'border-retro-orange',
       opacity: 'opacity-100',
       cursor: 'cursor-pointer',
-      hover: 'hover:shadow-lg hover:shadow-retro-orange/50',
+      hover: 'hover:border-8 hover:shadow-[0_0_20px_rgba(255,107,53,0.8)]',
       animate: 'animate-bounce',
     },
     completed: {
@@ -47,7 +47,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
       border: 'border-retro-orange',
       opacity: 'opacity-100',
       cursor: 'cursor-pointer',
-      hover: 'hover:shadow-lg hover:shadow-retro-orange/30',
+      hover: 'hover:border-8 hover:shadow-[0_0_20px_rgba(255,107,53,0.6)]',
       animate: '',
     },
   };
