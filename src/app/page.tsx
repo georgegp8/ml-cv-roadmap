@@ -120,15 +120,15 @@ export default function Home() {
         </div>
 
         {/* Start/End Markers */}
-        <div className="absolute top-30 left-1/2 text-center z-10" style={{ marginLeft: '40px' }}>
+        <div className="absolute top-30 left-1/2 text-center z-10" style={{ marginLeft: '80px' }}>
           <div className="font-pixel text-xs text-retro-orange mb-2 animate-bounce">
             ▼ START ▼
           </div>
         </div>
         
-        <div className="absolute left-1/2 -translate-x-1/2 text-center z-10" style={{ top: `${curriculum.length * 180 + 60}px` }}>
+        <div className="absolute left-1/2 -translate-x-1/2 text-center z-10" style={{ top: `${curriculum.length * 180 + 75}px`}}>
           <div className="font-pixel text-xs text-retro-orange animate-pulse">
-            END
+            ▲ END ▲
           </div>
         </div>
       </main>
