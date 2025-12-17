@@ -120,13 +120,13 @@ export default function Home() {
         </div>
 
         {/* Start/End Markers */}
-        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center">
+        <div className="absolute -top-16 left-1/2 -translate-x-1/2 text-center z-10">
           <div className="font-pixel text-xs text-retro-orange mb-2 animate-bounce">
-            START
+            ▼ START ▼
           </div>
         </div>
         
-        <div className="absolute left-1/2 -translate-x-1/2 text-center" style={{ top: `${curriculum.length * 180 + 60}px` }}>
+        <div className="absolute left-1/2 -translate-x-1/2 text-center z-10" style={{ top: `${curriculum.length * 180 + 60}px` }}>
           <div className="font-pixel text-xs text-retro-orange animate-pulse">
             END
           </div>
