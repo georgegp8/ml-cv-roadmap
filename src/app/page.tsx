@@ -97,7 +97,7 @@ export default function Home() {
         </div>
 
         {/* Start/End Markers */}
-        <div className="absolute top-24 left-1/2 -translate-x-1/2 text-center">
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center">
           <div className="font-pixel text-xs text-retro-orange mb-2 animate-bounce">
             START
           </div>

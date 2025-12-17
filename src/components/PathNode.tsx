@@ -38,14 +38,14 @@ export const PathNode: React.FC<PathNodeProps> = ({
       border: 'border-retro-orange',
       opacity: 'opacity-100',
       cursor: 'cursor-pointer',
-      hover: 'hover:scale-110 hover:shadow-lg hover:shadow-retro-orange/50',
+      hover: 'hover:animate-bounce hover:shadow-lg hover:shadow-retro-orange/50',
     },
     completed: {
       bg: 'bg-retro-orange',
       border: 'border-retro-orange',
       opacity: 'opacity-100',
       cursor: 'cursor-pointer',
-      hover: 'hover:scale-105',
+      hover: 'hover:animate-bounce hover:shadow-lg hover:shadow-retro-orange/30',
     },
   };
   
@@ -57,22 +57,22 @@ export const PathNode: React.FC<PathNodeProps> = ({
       className="absolute transform -translate-x-1/2"
       style={{
         left: `${x}%`,
-        top: `${y * 180}px`,
+        top: `${y * 180 - 20}px`,
       }}
     >
       {/* Node Container */}
       <div className="flex flex-col items-center">
-        {/* Icon Circle */}
+        {/* Icon Square */}
         <div
           className={`
-            w-20 h-20 rounded-full border-4 flex items-center justify-center
+            w-24 h-24 rounded-xl border-4 flex items-center justify-center
             ${config.bg} ${config.border} ${config.opacity} ${config.cursor}
             transition-all duration-300 ${config.hover}
-            relative z-10
+            relative z-20
           `}
           onClick={canClick ? onClick : undefined}
         >
-          <StageIcon stageId={id} size={48} />
+          <StageIcon stageId={id} size={56} />
           
           {/* Completion checkmark */}
           {status === 'completed' && (

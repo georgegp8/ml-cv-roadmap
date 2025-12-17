@@ -1,103 +1,101 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface LearningPathProps {
   totalStages: number;
 }
 
 export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
-  // Helper to calculate path coordinates
-  const getPathCoordinates = () => {
-    const points: { x: number; y: number; isStart?: boolean }[] = [];
-    const stageHeight = 180;
-    const svgWidth = 800;
-    const nodeRadius = 40; // Radio del círculo del nodo
-    
-    for (let i = 0; i < totalStages; i++) {
-      const centerY = i * stageHeight + 90;
-      let xPercent = 50;
-      
-      // Desktop S-curve pattern
+  const stageHeight = 180;
+  const svgWidth = 800;
+
+  // PathNode: w-24 h-24 => 96px -> radio 48
+  const nodeRadius = 48;
+  const holeRadius = nodeRadius + 10;
+
+  const { pathData, vbHeight, centers } = useMemo(() => {
+    const getXPercent = (i: number) => {
       const pos = i % 4;
-      if (pos === 0) xPercent = 50;
-      else if (pos === 1) xPercent = 75;
-      else if (pos === 2) xPercent = 50;
-      else if (pos === 3) xPercent = 25;
-      
-      const x = (xPercent / 100) * svgWidth;
-      
-      // Para el primer nodo, empezar desde el borde inferior
-      if (i === 0) {
-        points.push({ x, y: centerY + nodeRadius, isStart: true });
-      } else {
-        // Para los demás nodos, agregar dos puntos: entrada (arriba) y salida (abajo)
-        points.push({ x, y: centerY - nodeRadius }); // Entrada por arriba
-        if (i < totalStages - 1) {
-          points.push({ x, y: centerY + nodeRadius }); // Salida por abajo
-        }
-      }
+      if (pos === 0) return 50;
+      if (pos === 1) return 75;
+      if (pos === 2) return 50;
+      return 25;
+    };
+
+    // Centro EXACTO del círculo según tu PathNode
+    const pts = Array.from({ length: totalStages }, (_, i) => ({
+      x: (getXPercent(i) / 100) * svgWidth,
+      y: i * stageHeight + nodeRadius + 110, // y*180 + 40 + 10
+    }));
+
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 1; i < pts.length; i++) {
+      const prev = pts[i - 1];
+      const cur = pts[i];
+      const cpOffset = stageHeight * 0.45;
+
+      d += ` C ${prev.x} ${prev.y + cpOffset}, ${cur.x} ${cur.y - cpOffset}, ${cur.x} ${cur.y}`;
     }
-    
-    return points;
-  };
-  
-  const pathPoints = getPathCoordinates();
-  
-  // Construir path con curvas suaves usando Cubic Bezier
-  const pathData = pathPoints.map((point, index) => {
-    if (index === 0) {
-      return `M ${point.x} ${point.y}`;
-    }
-    
-    const prevPoint = pathPoints[index - 1];
-    const deltaY = point.y - prevPoint.y;
-    
-    // Control points para curvas suaves
-    const controlPointOffset = deltaY * 0.5;
-    
-    const cp1x = prevPoint.x;
-    const cp1y = prevPoint.y + controlPointOffset;
-    const cp2x = point.x;
-    const cp2y = point.y - controlPointOffset;
-    
-    return `C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${point.x} ${point.y}`;
-  }).join(' ');
-  
+
+    // Extra para que el último nodo (YOLO) no quede fuera
+    const height = (totalStages - 1) * stageHeight + nodeRadius * 2 + 140;
+
+    return { pathData: d, vbHeight: height, centers: pts };
+  }, [totalStages]);
+
   return (
-    <svg 
-      className="absolute top-0 left-0 w-full pointer-events-none hidden md:block"
-      style={{ height: `${totalStages * 180}px` }}
-      viewBox="0 0 800 1260"
-      preserveAspectRatio="xMidYMin meet"
+    <svg
+      className="absolute top-0 left-0 w-full pointer-events-none hidden md:block z-10"
+      style={{ height: `${vbHeight}px` }}
+      viewBox={`0 0 ${svgWidth} ${vbHeight}`}
+      preserveAspectRatio="none"
     >
       <defs>
         <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#ff6b35" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#ff6b35" stopOpacity="0.6" />
+          <stop offset="0%" stopColor="#ff6b35" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#ff6b35" stopOpacity="0.7" />
         </linearGradient>
+
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        {/* Recorta la línea debajo de cada icono */}
+        <mask id="pathMask">
+          <rect x="0" y="0" width={svgWidth} height={vbHeight} fill="white" />
+          {centers.map((p, idx) => (
+            <circle key={idx} cx={p.x} cy={p.y} r={holeRadius} fill="black" />
+          ))}
+        </mask>
       </defs>
-      
-      {/* Draw dotted path connecting nodes */}
+
+      {/* Glow detrás */}
+      <path
+        d={pathData}
+        stroke="#ff6b35"
+        strokeWidth="8"
+        strokeDasharray="10 10"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.16"
+        filter="url(#glow)"
+        mask="url(#pathMask)"
+      />
+
+      {/* Línea principal */}
       <path
         d={pathData}
         stroke="url(#pathGradient)"
         strokeWidth="3"
-        strokeDasharray="10,10"
-        fill="none"
+        strokeDasharray="10 10"
         strokeLinecap="round"
-      />
-      
-      {/* Glow effect */}
-      <path
-        d={pathData}
-        stroke="#ff6b35"
-        strokeWidth="6"
-        strokeDasharray="10,10"
         fill="none"
-        strokeLinecap="round"
-        opacity="0.2"
-        filter="blur(4px)"
+        mask="url(#pathMask)"
       />
     </svg>
   );
