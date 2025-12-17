@@ -186,6 +186,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                       <CodePlayground
                         initialCode={stage.practicalExamples[0].code}
                         title={`${stage.title} - ${stage.practicalExamples[0].title}`}
+                        stageId={stage.id}
                       />
                       
                       <div className="bg-retro-gray/20 p-4 rounded border border-retro-gray">
@@ -210,6 +211,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                               <CodePlayground
                                 initialCode={example.code}
                                 title={example.title}
+                                stageId={stage.id}
                               />
                             </div>
                           </details>
