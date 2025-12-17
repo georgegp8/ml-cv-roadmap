@@ -126,8 +126,8 @@ export default function Home() {
           </div>
         </div>
         
-        <div className="absolute left-1/2 -translate-x-1/2 text-center z-10" style={{ top: `${curriculum.length * 180 + 75}px`}}>
-          <div className="font-pixel text-xs text-retro-orange animate-pulse">
+        <div className="absolute left-1/2 -translate-x-1/2 text-center z-10" style={{ top: `${curriculum.length * 180 + 100}px`}}>
+          <div className="font-pixel text-xs text-retro-orange animate-bounce">
             ▲ END ▲
           </div>
         </div>
