@@ -614,97 +614,137 @@ with torch.no_grad():
         title: 'Detección con YOLOv8',
         code: `from ultralytics import YOLO
 import cv2
+import urllib.request
+
+# Descargar imagen de ejemplo (calle con coches y personas)
+url = 'https://ultralytics.com/images/bus.jpg'
+urllib.request.urlretrieve(url, 'bus.jpg')
+print('✓ Imagen descargada')
 
 # Cargar modelo pre-entrenado YOLOv8
 model = YOLO('yolov8n.pt')  # n=nano, s=small, m=medium, l=large, x=xlarge
 
-# Realizar detección en una imagen
-results = model('imagen.jpg')
+# Realizar detección en la imagen
+results = model('bus.jpg', conf=0.5)
 
 # Procesar resultados
 for result in results:
     boxes = result.boxes  # Bounding boxes
-    for box in boxes:
+    print(f"\\n✓ Objetos detectados: {len(boxes)}")
+    
+    for i, box in enumerate(boxes):
         # Obtener coordenadas y confianza
         x1, y1, x2, y2 = box.xyxy[0]
         conf = box.conf[0]
         cls = box.cls[0]
         
-        print(f"Clase: {model.names[int(cls)]}")
-        print(f"Confianza: {conf:.2f}")
-        print(f"Box: [{x1:.0f}, {y1:.0f}, {x2:.0f}, {y2:.0f}]")
+        print(f"\\n  Objeto {i+1}:")
+        print(f"    Clase: {model.names[int(cls)]}")
+        print(f"    Confianza: {conf:.2%}")
+        print(f"    Box: [{x1:.0f}, {y1:.0f}, {x2:.0f}, {y2:.0f}]")
 
 # Mostrar imagen con detecciones
+from google.colab.patches import cv2_imshow
 annotated = results[0].plot()
-cv2.imshow('YOLOv8', annotated)
-cv2.waitKey(0)`,
+cv2_imshow(annotated)`,
         explanation:
-          'YOLOv8 de Ultralytics es extremadamente fácil de usar y ofrece excelente balance entre velocidad y precisión.',
+          'YOLOv8 de Ultralytics es extremadamente fácil de usar y ofrece excelente balance entre velocidad y precisión. Detecta 80 clases diferentes (personas, coches, animales, etc.).',
       },
       {
         title: 'Entrenar YOLO Personalizado',
         code: `from ultralytics import YOLO
 
-# Cargar modelo base
+# Cargar modelo base para transfer learning
 model = YOLO('yolov8n.pt')
 
-# Entrenar con tu dataset
-# Dataset debe estar en formato YOLO (txt con: clase x_center y_center width height)
+# Opción 1: Entrenar con dataset de ejemplo COCO128
+# Dataset pequeño con 128 imágenes para pruebas rápidas
 results = model.train(
-    data='mi_dataset.yaml',  # Configuración del dataset
-    epochs=100,
+    data='coco128.yaml',  # Dataset de ejemplo incluido
+    epochs=3,  # Solo 3 epochs para demo rápida
     imgsz=640,
     batch=16,
-    name='mi_detector',
-    patience=50,  # Early stopping
-    save=True,
+    name='demo_detector',
     device=0  # GPU 0, o 'cpu' para CPU
 )
 
+print("\\n✓ Entrenamiento completado!")
+
 # Validar modelo entrenado
 metrics = model.val()
-print(f"mAP50: {metrics.box.map50:.3f}")
+print(f"\\nmAP50: {metrics.box.map50:.3f}")
 print(f"mAP50-95: {metrics.box.map:.3f}")
 
-# Exportar modelo optimizado
-model.export(format='onnx')  # Para producción`,
+# Opción 2: Para tu dataset personalizado, crea un archivo YAML:
+# Ejemplo de mi_dataset.yaml:
+# path: /path/to/dataset
+# train: images/train
+# val: images/val
+# names:
+#   0: clase1
+#   1: clase2
+#
+# Anota imágenes con herramientas como:
+# - Roboflow: https://roboflow.com
+# - LabelImg: https://github.com/heartexlabs/labelImg
+# - CVAT: https://cvat.org
+
+# Exportar modelo optimizado para producción
+model.export(format='onnx')  # Más rápido para inferencia
+print("\\n✓ Modelo exportado a ONNX")`,
         explanation:
-          'Entrenar YOLO con tus propios datos es sencillo. El formato YOLO facilita la anotación de datasets.',
+          'Entrenar YOLO con transfer learning es muy efectivo. COCO128 es perfecto para practicar. Para datasets propios, usa Roboflow para anotar imágenes fácilmente.',
       },
       {
-        title: 'Detección en Video en Tiempo Real',
+        title: 'Detección en Video/Webcam',
         code: `from ultralytics import YOLO
 import cv2
+import urllib.request
 
 # Cargar modelo
 model = YOLO('yolov8n.pt')
 
-# Abrir video o webcam (0 para webcam)
-cap = cv2.VideoCapture('video.mp4')  # o VideoCapture(0)
+# Opción 1: Procesar video de ejemplo
+url = 'https://github.com/intel-iot-devkit/sample-videos/raw/master/people-detection.mp4'
+urllib.request.urlretrieve(url, 'demo_video.mp4')
+print('✓ Video descargado')
 
-while cap.isOpened():
+video_path = 'demo_video.mp4'
+cap = cv2.VideoCapture(video_path)
+
+# Opción 2: Para usar webcam en Google Colab:
+# from IPython.display import display, Javascript
+# from google.colab.output import eval_js
+# from base64 import b64decode
+# # Requiere permisos de cámara en el navegador
+
+frame_count = 0
+max_frames = 50  # Procesar solo 50 frames para demo
+
+while cap.isOpened() and frame_count < max_frames:
     ret, frame = cap.read()
     if not ret:
         break
     
-    # Realizar detección
-    results = model(frame, stream=True)
+    # Realizar detección (stream=True optimiza memoria)
+    results = model(frame, conf=0.5, verbose=False)
     
-    # Dibujar resultados
-    for result in results:
-        annotated = result.plot()
-        cv2.imshow('YOLO Real-time', annotated)
+    # Contar objetos detectados
+    num_objects = len(results[0].boxes)
     
-    # Presiona 'q' para salir
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    frame_count += 1
+    if frame_count % 10 == 0:
+        print(f"Frame {frame_count}: {num_objects} objetos detectados")
 
 cap.release()
-cv2.destroyAllWindows()
+print(f"\\n✓ Procesados {frame_count} frames")
+print(f"FPS del video: {cap.get(cv2.CAP_PROP_FPS):.1f}")
 
-print("FPS promedio:", cap.get(cv2.CAP_PROP_FPS))`,
+# Para obtener video con anotaciones:
+# results = model(video_path, save=True, conf=0.5)
+# El video se guarda en runs/detect/predict/`,
         explanation:
-          'YOLO es ideal para detección en tiempo real. Procesa video frame por frame con alta velocidad.',
+          'YOLO procesa video frame por frame con alta velocidad. Para producción real, considera usar threading para captura y procesamiento paralelo.',
       },
     ],
     resources: [
