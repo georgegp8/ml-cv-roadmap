@@ -457,9 +457,9 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # minSize más grande = ignora detecciones pequeñas erróneas
 faces = face_cascade.detectMultiScale(
     gray, 
-    scaleFactor=1.1, 
-    minNeighbors=8,  # Aumentado de 5 a 8 para mayor precisión
-    minSize=(50, 50),  # Aumentado de 30x30 a 50x50
+    scaleFactor=1.2,
+    minNeighbors=6,
+    minSize=(30, 30),
     flags=cv2.CASCADE_SCALE_IMAGE
 )
 
