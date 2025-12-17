@@ -515,8 +515,11 @@ cv2_imshow(img)`,
     practicalExamples: [
       {
         title: 'Red Neuronal Simple',
-        code: `# IMPORTANTE: PyTorch ya viene instalado en Google Colab
-# Si no está: !pip install torch torchvision
+        code: `# ════════════════════════════════════════════════════════
+# ⚠️  IMPORTANTE: PyTorch ya viene en Google Colab
+# Si usas otro entorno, ejecuta primero:
+# !pip install torch torchvision
+# ════════════════════════════════════════════════════════
 
 import torch
 import torch.nn as nn
@@ -549,7 +552,9 @@ print(model)`,
       },
       {
         title: 'Ciclo de Entrenamiento',
-        code: `# EJECUTA ESTE CÓDIGO EN UNA CELDA SEPARADA (debajo del anterior)
+        code: `# ════════════════════════════════════════════════════════
+# 📝 EJECUTA EN UNA CELDA SEPARADA (debajo del anterior)
+# ════════════════════════════════════════════════════════
 
 import torch
 import torch.nn as nn
@@ -656,8 +661,14 @@ with torch.no_grad():
     practicalExamples: [
       {
         title: 'Detección con YOLOv8',
-        code: `# IMPORTANTE: Ejecuta esto primero en una celda separada
+        code: `# ════════════════════════════════════════════════════════
+# ⚠️  PASO 1: Ejecuta primero en una celda separada
 # !pip install -q ultralytics
+# ════════════════════════════════════════════════════════
+
+# ════════════════════════════════════════════════════════
+# 📝 PASO 2: Ejecuta este código en la siguiente celda
+# ════════════════════════════════════════════════════════
 
 from ultralytics import YOLO
 import cv2

@@ -131,7 +131,7 @@ export const VictoryModal: React.FC<VictoryModalProps> = ({
                   y: 0,
                   transition: { delay: 0.5 }
                 }}
-                className="text-2xl md:text-4xl lg:text-5xl font-pixel text-retro-orange mb-4 leading-tight"
+                className="text-lg md:text-2xl lg:text-4xl font-pixel text-retro-orange mb-4 leading-tight px-4"
               >
                 ¡FELICITACIONES!
               </motion.h2>
