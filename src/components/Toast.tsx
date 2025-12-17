@@ -15,7 +15,7 @@ export const Toast: React.FC<ToastProps> = ({
   message,
   isVisible,
   onClose,
-  duration = 3000,
+  duration = 2000,
 }) => {
   useEffect(() => {
     if (isVisible) {
