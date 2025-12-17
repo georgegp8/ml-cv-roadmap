@@ -60,7 +60,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
       className="absolute transform -translate-x-1/2"
       style={{
         left: `${x}%`,
-        top: `${y * 180 - 20}px`,
+        top: `${y * 180 - 20 - (id === 'opencv' ? 25 : 0)}px`,
       }}
     >
       {/* Node Container */}
@@ -93,7 +93,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
         </div>
         
         {/* Title */}
-        <div className={`mt-3 ${isLeft ? 'md:mr-32' : 'md:ml-32'}`}>
+        <div className={`${id === 'opencv' ? '-mt-2' : 'mt-3'} === 'opencv' ? '-mt-2' : 'mt-3'} ${isLeft ? 'md:mr-32' : id === 'opencv' ? 'md:ml-48' : 'md:ml-32'}`}>
           <div className="px-3 py-1 border-2 border-retro-orange bg-retro-black rounded font-pixel text-xs text-white shadow-lg">
             {title}
           </div>
