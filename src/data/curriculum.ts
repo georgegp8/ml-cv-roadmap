@@ -549,7 +549,9 @@ print(model)`,
       },
       {
         title: 'Ciclo de Entrenamiento',
-        code: `import torch
+        code: `# EJECUTA ESTE CÓDIGO EN UNA CELDA SEPARADA (debajo del anterior)
+
+import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
