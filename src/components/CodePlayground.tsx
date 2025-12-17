@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { Play, RotateCcw, Loader2 } from 'lucide-react';
+import { ImageModal } from './ImageModal';
 
 interface CodePlaygroundProps {
   initialCode: string;
@@ -19,6 +20,8 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [pyodideReady, setPyodideReady] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
   const pyodideRef = useRef<any>(null);
   const loadingRef = useRef(false);
 
@@ -125,7 +128,10 @@ else:
 `);
       
       if (hasPlot) {
-        stdout += `\n\n📊 Gráfica generada:\n<img src="data:image/png;base64,${hasPlot}" style="max-width: 100%; height: auto; margin-top: 10px;" />`;
+        const imgDataUrl = `data:image/png;base64,${hasPlot}`;
+        setImageUrl(imgDataUrl);
+        setShowImageModal(true);
+        stdout += `\n\n📊 Gráfica generada - Click en "Ver Gráfica" para visualizar`;
       }
       
       setOutput(stdout || '✓ Código ejecutado exitosamente (sin salida)');
@@ -161,6 +167,40 @@ else:
     );
   };
 
+  // Abrir en Google Colab
+  const openInColab = () => {
+    const notebook = {
+      cells: [
+        {
+          cell_type: 'code',
+          source: code.split('\n'),
+          metadata: {},
+          outputs: [],
+          execution_count: null
+        }
+      ],
+      metadata: {
+        kernelspec: {
+          display_name: 'Python 3',
+          language: 'python',
+          name: 'python3'
+        }
+      },
+      nbformat: 4,
+      nbformat_minor: 0
+    };
+    
+    const notebookJson = JSON.stringify(notebook);
+    const encoded = encodeURIComponent(notebookJson);
+    window.open(`https://colab.research.google.com/notebook#create=true&notebook=${encoded}`, '_blank');
+  };
+
+  // Abrir en Repl.it
+  const openInReplit = () => {
+    const replitUrl = `https://replit.com/languages/python3?code=${encodeURIComponent(code)}`;
+    window.open(replitUrl, '_blank');
+  };
+
   if (!mounted) {
     return (
       <div className="bg-retro-black border-2 border-retro-orange/30 rounded-lg overflow-hidden p-8 text-center">
@@ -173,21 +213,19 @@ else:
   return (
     <div className="bg-retro-black border-2 border-retro-orange/30 rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-retro-gray/30 px-3 md:px-4 py-3 border-b border-retro-orange/30 flex items-center justify-between gap-2">
-        <span className="text-retro-orange font-pixel text-[10px] md:text-xs flex-1 truncate">{title}</span>
-        <div className="flex gap-2 flex-shrink-0">
-          <button
-            onClick={resetCode}
-            className="p-3 md:p-2 hover:bg-retro-orange/20 rounded transition-colors text-gray-400 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
-            title="Reset code"
-          >
-            <RotateCcw size={16} />
-          </button>
+      <div className="bg-retro-gray/30 px-3 md:px-4 py-3 border-b border-retro-orange/30">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <span className="text-retro-orange font-pixel text-[10px] md:text-xs flex-1 truncate">{title}</span>
+        </div>
+        
+        {/* Botones de acción */}
+        <div className="flex flex-wrap gap-2">
+          {/* Ejecutar localmente */}
           <button
             onClick={runCode}
             disabled={isLoading}
             className={`
-              px-4 md:px-4 py-3 md:py-2 rounded flex items-center gap-2 text-xs font-semibold transition-all min-h-[44px]
+              flex-1 min-w-[120px] px-3 py-2 rounded flex items-center justify-center gap-2 text-xs font-semibold transition-all min-h-[44px]
               ${isLoading
                 ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                 : 'bg-retro-orange text-black hover:bg-white'
@@ -197,15 +235,52 @@ else:
             {isLoading ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
-                <span className="hidden md:inline">Ejecutando...</span>
+                <span>Ejecutando...</span>
               </>
             ) : (
               <>
                 <Play size={14} />
-                <span className="hidden md:inline">Ejecutar Código</span>
+                <span>Ejecutar Aquí</span>
               </>
             )}
           </button>
+          
+          {/* Google Colab */}
+          <button
+            onClick={openInColab}
+            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold transition-colors min-h-[44px] flex items-center gap-2"
+            title="Abrir en Google Colab (todas las librerías disponibles)"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm0 2c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2z"/>
+            </svg>
+            <span className="hidden sm:inline">Colab</span>
+          </button>
+          
+          {/* Repl.it */}
+          <button
+            onClick={openInReplit}
+            className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-semibold transition-colors min-h-[44px] flex items-center gap-2"
+            title="Abrir en Repl.it"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/>
+            </svg>
+            <span className="hidden sm:inline">Repl.it</span>
+          </button>
+          
+          {/* Reset */}
+          <button
+            onClick={resetCode}
+            className="p-2 hover:bg-retro-orange/20 rounded transition-colors text-gray-400 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
+            title="Resetear código"
+          >
+            <RotateCcw size={16} />
+          </button>
+        </div>
+        
+        <div className="mt-2 text-[10px] text-gray-500">
+          💡 Usa <span className="text-blue-400">Colab</span> o <span className="text-green-400">Repl.it</span> para todas las librerías
         </div>
       </div>
 
@@ -229,19 +304,32 @@ else:
 
       {/* Output */}
       <div className="bg-[#1e1e1e] p-3 md:p-4">
-        <div className="text-[10px] md:text-xs text-gray-500 mb-2 font-pixel">SALIDA:</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-[10px] md:text-xs text-gray-500 font-pixel">SALIDA:</div>
+          {imageUrl && (
+            <button
+              onClick={() => setShowImageModal(true)}
+              className="px-3 py-1 bg-retro-orange text-black hover:bg-white transition-colors rounded text-xs font-semibold flex items-center gap-1"
+            >
+              📊 Ver Gráfica
+            </button>
+          )}
+        </div>
         <div className="text-green-400 font-mono text-xs md:text-sm whitespace-pre-wrap break-words">
           {output ? (
-            output.includes('<img') ? (
-              <div dangerouslySetInnerHTML={{ __html: output }} />
-            ) : (
-              <pre>{output}</pre>
-            )
+            <pre>{output}</pre>
           ) : (
             'Sin salida aún. Ejecuta el código para ver los resultados.'
           )}
         </div>
       </div>
+      
+      <ImageModal
+        imageUrl={imageUrl}
+        isOpen={showImageModal}
+        onClose={() => setShowImageModal(false)}
+        title="Visualización Matplotlib"
+      />
     </div>
   );
 };
