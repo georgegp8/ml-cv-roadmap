@@ -396,14 +396,15 @@ print(f"Mejor score: {grid_search.best_score_:.2f}")`,
         code: `import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from google.colab.patches import cv2_imshow
+import urllib.request
 
-# Subir la imagen de mineral de cobre (óxido de cobre - roca turquesa/verde)
-from google.colab import files
-uploaded = files.upload()  # Sube tu imagen aquí
+# Descargar imagen de mineral de cobre desde el servidor
+url = 'https://ml-cv-roadmap.vercel.app/oxido-de-cobre.jpg'
+urllib.request.urlretrieve(url, 'mineral.jpg')
+print('✓ Imagen descargada: oxido-de-cobre.jpg')
 
 # Cargar imagen
-img = cv2.imread(list(uploaded.keys())[0])
+img = cv2.imread('mineral.jpg')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # Aplicar Gaussian Blur para reducir ruido
@@ -416,10 +417,13 @@ edges = cv2.Canny(blurred, 50, 150)
 fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 axes[0].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 axes[0].set_title('Original - Mineral de Cobre')
+axes[0].axis('off')
 axes[1].imshow(gray, cmap='gray')
 axes[1].set_title('Grayscale')
+axes[1].axis('off')
 axes[2].imshow(edges, cmap='gray')
 axes[2].set_title('Bordes (Canny)')
+axes[2].axis('off')
 plt.tight_layout()
 plt.show()
 
@@ -431,11 +435,13 @@ print(f"Bordes detectados: {np.sum(edges > 0)} píxeles")`,
       {
         title: 'Detección de Rostros',
         code: `import cv2
+import urllib.request
 from google.colab.patches import cv2_imshow
 
-# Subir imagen de familia con perro
-from google.colab import files
-uploaded = files.upload()  # Sube la foto familiar aquí
+# Descargar imagen de familia desde el servidor
+url = 'https://ml-cv-roadmap.vercel.app/familia_deteccion_rostro.jpg'
+urllib.request.urlretrieve(url, 'familia.jpg')
+print('✓ Imagen descargada: familia_deteccion_rostro.jpg')
 
 # Cargar clasificador pre-entrenado
 face_cascade = cv2.CascadeClassifier(
@@ -443,7 +449,7 @@ face_cascade = cv2.CascadeClassifier(
 )
 
 # Cargar imagen
-img = cv2.imread(list(uploaded.keys())[0])
+img = cv2.imread('familia.jpg')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # Detectar rostros
