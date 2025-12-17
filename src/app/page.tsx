@@ -120,7 +120,7 @@ export default function Home() {
         </div>
 
         {/* Start/End Markers */}
-        <div className="absolute -top-16 left-1/2 -translate-x-1/2 text-center z-10">
+        <div className="absolute top-30 left-1/2 text-center z-10" style={{ marginLeft: '40px' }}>
           <div className="font-pixel text-xs text-retro-orange mb-2 animate-bounce">
             ▼ START ▼
           </div>
