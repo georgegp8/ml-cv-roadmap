@@ -94,9 +94,9 @@ export const PathNode: React.FC<PathNodeProps> = ({
         
         {/* Title */}
         <div className={`mt-3 ${isLeft ? 'md:mr-32' : 'md:ml-32'}`}>
-          <Badge variant={status === 'completed' ? 'success' : status === 'locked' ? 'locked' : 'default'}>
+          <div className="px-3 py-1 border-2 border-retro-orange bg-retro-black rounded font-pixel text-xs text-white shadow-lg">
             {title}
-          </Badge>
+          </div>
         </div>
       </div>
     </div>
