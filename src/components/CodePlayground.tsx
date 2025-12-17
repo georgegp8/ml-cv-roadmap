@@ -28,7 +28,9 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
 
   // Determinar el editor apropiado según el stageId
   const getEditorUrl = () => {
-    if (stageId.includes('matplotlib') || stageId.includes('numpy')) {
+    if (stageId.includes('python') || stageId === 'python') {
+      return 'https://www.online-python.com/';
+    } else if (stageId.includes('matplotlib') || stageId.includes('numpy')) {
       return 'https://www.tutorialspoint.com/compilers/online-matplotlib-compiler.htm';
     } else if (stageId.includes('pandas')) {
       return 'https://python-fiddle.com/examples/pandas';
@@ -80,7 +82,8 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
 
   const editorUrl = getEditorUrl();
   const editorName = editorUrl 
-    ? (editorUrl.includes('matplotlib') ? 'Matplotlib Online' 
+    ? (editorUrl.includes('online-python') ? 'Online-Python'
+      : editorUrl.includes('matplotlib') ? 'Matplotlib Online' 
       : editorUrl.includes('pandas') ? 'Python Fiddle (Pandas)'
       : 'Python Fiddle (Sklearn)')
     : 'Google Colab';

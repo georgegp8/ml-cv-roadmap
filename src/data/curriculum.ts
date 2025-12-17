@@ -223,9 +223,9 @@ df = pd.DataFrame(data)
 # Exploración básica
 print('Dataset:')
 print(df)
-print('\nInformación:')
+print('\\nInformación:')
 print(df.info())
-print('\nEstadísticas:')
+print('\\nEstadísticas:')
 print(df.describe())
 
 # Agrupar y analizar
@@ -234,10 +234,12 @@ city_stats = df.groupby('ciudad').agg({
     'edad': 'mean'
 })
 
-print('\nEstadísticas por ciudad:')
+print('\\nEstadísticas por ciudad:')
 print(city_stats)
-high_earners = df[df['salario'] > 60000]
-print(f"Personas con salario > 60k: {len(high_earners)}")`,
+
+# Filtrar salarios altos
+high_earners = df[df['salario'] > 40000]
+print(f"\\nPersonas con salario > 40k: {len(high_earners)}")`,
         explanation:
           'EDA te ayuda a entender tus datos antes de entrenar modelos. Crucial para feature engineering.',
       },
@@ -373,9 +375,14 @@ print(f"Mejor score: {grid_search.best_score_:.2f}")`,
         code: `import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from google.colab.patches import cv2_imshow
+
+# Subir la imagen de mineral de cobre (óxido de cobre - roca turquesa/verde)
+from google.colab import files
+uploaded = files.upload()  # Sube tu imagen aquí
 
 # Cargar imagen
-img = cv2.imread('image.jpg')
+img = cv2.imread(list(uploaded.keys())[0])
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # Aplicar Gaussian Blur para reducir ruido
@@ -387,18 +394,27 @@ edges = cv2.Canny(blurred, 50, 150)
 # Visualizar
 fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 axes[0].imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-axes[0].set_title('Original')
+axes[0].set_title('Original - Mineral de Cobre')
 axes[1].imshow(gray, cmap='gray')
 axes[1].set_title('Grayscale')
 axes[2].imshow(edges, cmap='gray')
-axes[2].set_title('Edges (Canny)')
-plt.show()`,
+axes[2].set_title('Bordes (Canny)')
+plt.tight_layout()
+plt.show()
+
+print(f"Forma de la imagen: {img.shape}")
+print(f"Bordes detectados: {np.sum(edges > 0)} píxeles")`,
         explanation:
-          'La detección de bordes es fundamental en visión por computadora. Canny es el algoritmo más usado.',
+          'La detección de bordes es fundamental en visión por computadora. Canny es el algoritmo más usado. Usa la imagen del mineral de cobre (roca turquesa) para ver cómo detecta los contornos y texturas naturales.',
       },
       {
         title: 'Detección de Rostros',
         code: `import cv2
+from google.colab.patches import cv2_imshow
+
+# Subir imagen de familia con perro
+from google.colab import files
+uploaded = files.upload()  # Sube la foto familiar aquí
 
 # Cargar clasificador pre-entrenado
 face_cascade = cv2.CascadeClassifier(
@@ -406,7 +422,7 @@ face_cascade = cv2.CascadeClassifier(
 )
 
 # Cargar imagen
-img = cv2.imread('people.jpg')
+img = cv2.imread(list(uploaded.keys())[0])
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # Detectar rostros
@@ -414,15 +430,18 @@ faces = face_cascade.detectMultiScale(
     gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30)
 )
 
-# Dibujar rectángulos
+# Dibujar rectángulos en rostros detectados
 for (x, y, w, h) in faces:
-    cv2.rectangle(img, (x, y), (x+w, y+h), (255, 107, 53), 2)
+    cv2.rectangle(img, (x, y), (x+w, y+h), (255, 107, 53), 3)
 
-print(f"Rostros detectados: {len(faces)}")
-cv2.imshow('Face Detection', img)
-cv2.waitKey(0)`,
+print(f"✓ Rostros detectados: {len(faces)}")
+for i, (x, y, w, h) in enumerate(faces):
+    print(f"  Rostro {i+1}: posición ({x}, {y}), tamaño {w}x{h}")
+
+# Mostrar resultado
+cv2_imshow(img)`,
         explanation:
-          'Haar Cascades son un método clásico para detección de objetos. Base para entender detección moderna.',
+          'Haar Cascades son un método clásico para detección de objetos. Base para entender detección moderna. Usa la foto familiar para detectar rostros humanos automáticamente.',
       },
     ],
     resources: [
