@@ -515,7 +515,10 @@ cv2_imshow(img)`,
     practicalExamples: [
       {
         title: 'Red Neuronal Simple',
-        code: `import torch
+        code: `# IMPORTANTE: PyTorch ya viene instalado en Google Colab
+# Si no está: !pip install torch torchvision
+
+import torch
 import torch.nn as nn
 import torch.optim as optim
 
@@ -651,7 +654,10 @@ with torch.no_grad():
     practicalExamples: [
       {
         title: 'Detección con YOLOv8',
-        code: `from ultralytics import YOLO
+        code: `# IMPORTANTE: Ejecuta esto primero en una celda separada
+# !pip install -q ultralytics
+
+from ultralytics import YOLO
 import cv2
 import urllib.request
 
