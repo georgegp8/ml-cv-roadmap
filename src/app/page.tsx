@@ -6,6 +6,8 @@ import { LearningPath } from '../components/LearningPath';
 import { PathNode } from '../components/PathNode';
 import { StageModal } from '../components/StageModal';
 import { ProgressHeader } from '../components/ProgressHeader';
+import { ConfettiEffect } from '../components/ConfettiEffect';
+import { Toast } from '../components/Toast';
 import { curriculum, Stage } from '../data/curriculum';
 
 export default function Home() {
@@ -13,6 +15,9 @@ export default function Home() {
   const [completedStages, setCompletedStages] = useState<string[]>([]);
   const [selectedStage, setSelectedStage] = useState<Stage | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1024
   );
@@ -31,9 +36,26 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+  // Smooth scroll to stage
+  const scrollToStage = (index: number) => {
+    const element = document.getElementById(`stage-${index}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   const handleComplete = (id: string) => {
     if (!completedStages.includes(id)) {
       setCompletedStages([...completedStages, id]);
+      
+      // Trigger confetti and toast
+      setShowConfetti(true);
+      const stage = curriculum.find(s => s.id === id);
+      setToastMessage(`¡Misión completada: ${stage?.title || 'Stage'}! 🎉`);
+      setShowToast(true);
+      
+      // Reset confetti after animation
+      setTimeout(() => setShowConfetti(false), 3500);
     }
   };
 
@@ -81,17 +103,18 @@ export default function Home() {
             const status = getStageStatus(index, stage.id);
             const xPos = getXPosition(index);
             return (
-              <PathNode
-                key={stage.id}
-                id={stage.id}
-                icon={stage.icon}
-                title={stage.title}
-                status={status}
-                x={xPos}
-                y={index}
-                onClick={() => handleNodeClick(stage)}
-                isLeft={xPos < 50}
-              />
+              <div key={stage.id} id={`stage-${index}`}>
+                <PathNode
+                  id={stage.id}
+                  icon={stage.icon}
+                  title={stage.title}
+                  status={status}
+                  x={xPos}
+                  y={index}
+                  onClick={() => handleNodeClick(stage)}
+                  isLeft={xPos < 50}
+                />
+              </div>
             );
           })}
         </div>
@@ -104,6 +127,14 @@ export default function Home() {
         </div>
       </main>
 
+
+      <ConfettiEffect trigger={showConfetti} />
+      
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
       <StageModal
         stage={selectedStage}
         isOpen={isModalOpen}

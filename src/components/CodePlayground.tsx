@@ -129,12 +129,12 @@ sys.stdout = StringIO()
   return (
     <div className="bg-retro-black border-2 border-retro-orange/30 rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-retro-gray/30 px-4 py-3 border-b border-retro-orange/30 flex items-center justify-between">
-        <span className="text-retro-orange font-pixel text-xs">{title}</span>
-        <div className="flex gap-2">
+      <div className="bg-retro-gray/30 px-3 md:px-4 py-3 border-b border-retro-orange/30 flex items-center justify-between gap-2">
+        <span className="text-retro-orange font-pixel text-[10px] md:text-xs flex-1 truncate">{title}</span>
+        <div className="flex gap-2 flex-shrink-0">
           <button
             onClick={resetCode}
-            className="p-2 hover:bg-retro-orange/20 rounded transition-colors text-gray-400 hover:text-white"
+            className="p-3 md:p-2 hover:bg-retro-orange/20 rounded transition-colors text-gray-400 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
             title="Reset code"
           >
             <RotateCcw size={16} />
@@ -143,7 +143,7 @@ sys.stdout = StringIO()
             onClick={runCode}
             disabled={isLoading}
             className={`
-              px-4 py-2 rounded flex items-center gap-2 text-xs font-semibold transition-all
+              px-4 md:px-4 py-3 md:py-2 rounded flex items-center gap-2 text-xs font-semibold transition-all min-h-[44px]
               ${isLoading
                 ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                 : 'bg-retro-orange text-black hover:bg-white'
@@ -153,12 +153,12 @@ sys.stdout = StringIO()
             {isLoading ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
-                Ejecutando...
+                <span className="hidden md:inline">Ejecutando...</span>
               </>
             ) : (
               <>
                 <Play size={14} />
-                Ejecutar Código
+                <span className="hidden md:inline">Ejecutar Código</span>
               </>
             )}
           </button>
@@ -169,11 +169,11 @@ sys.stdout = StringIO()
       <div className="border-b border-retro-orange/30">
         <CodeMirror
           value={code}
-          height="250px"
+          height="200px"
+          className="text-xs md:text-sm"
           theme="dark"
           extensions={[python()]}
           onChange={(value) => setCode(value)}
-          className="text-sm"
           basicSetup={{
             lineNumbers: true,
             highlightActiveLineGutter: true,
@@ -184,9 +184,9 @@ sys.stdout = StringIO()
       </div>
 
       {/* Output */}
-      <div className="bg-[#1e1e1e] p-4">
-        <div className="text-xs text-gray-500 mb-2 font-pixel">SALIDA:</div>
-        <pre className="text-green-400 font-mono text-sm whitespace-pre-wrap">
+      <div className="bg-[#1e1e1e] p-3 md:p-4">
+        <div className="text-[10px] md:text-xs text-gray-500 mb-2 font-pixel">SALIDA:</div>
+        <pre className="text-green-400 font-mono text-xs md:text-sm whitespace-pre-wrap break-words">
           {output || 'Sin salida aún. Ejecuta el código para ver los resultados.'}
         </pre>
       </div>

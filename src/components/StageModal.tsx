@@ -51,28 +51,28 @@ export const StageModal: React.FC<StageModalProps> = ({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative w-full max-w-4xl h-[80vh] bg-retro-black border-4 border-retro-orange flex flex-col overflow-hidden shadow-[0_0_50px_rgba(255,107,53,0.2)]"
-            style={{ borderRadius: '12px' }}
+            className="relative w-full max-w-4xl h-[90vh] md:h-[80vh] bg-retro-black border-2 md:border-4 border-retro-orange flex flex-col overflow-hidden shadow-[0_0_50px_rgba(255,107,53,0.2)]"
+            style={{ borderRadius: '8px' }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b-4 border-retro-gray bg-retro-gray/20">
-              <div className="flex items-center gap-4">
-                <StageIcon stageId={stage.id} size={64} />
+            <div className="flex items-center justify-between p-4 md:p-6 border-b-2 md:border-b-4 border-retro-gray bg-retro-gray/20">
+              <div className="flex items-center gap-2 md:gap-4">
+                <StageIcon stageId={stage.id} size={48} className="md:w-16 md:h-16" />
                 <div>
-                  <h2 className="text-xl md:text-2xl font-pixel text-retro-orange">{stage.title}</h2>
-                  <p className="text-gray-400 font-mono text-sm">{stage.subtitle}</p>
+                  <h2 className="text-base md:text-2xl font-pixel text-retro-orange">{stage.title}</h2>
+                  <p className="text-gray-400 font-mono text-xs md:text-sm hidden md:block">{stage.subtitle}</p>
                 </div>
               </div>
               <button 
                 onClick={onClose}
-                className="p-2 hover:bg-retro-orange hover:text-black transition-colors rounded"
+                className="p-3 md:p-2 hover:bg-retro-orange hover:text-black transition-colors rounded min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
-                <X size={24} />
+                <X size={20} className="md:w-6 md:h-6" />
               </button>
             </div>
             
             {/* Tabs */}
-            <div className="flex border-b-4 border-retro-gray bg-retro-black">
+            <div className="flex border-b-2 md:border-b-4 border-retro-gray bg-retro-black">
               {[
                 { id: 'overview', label: 'Resumen', icon: BookOpen },
                 { id: 'code', label: 'Código', icon: Code },
@@ -82,21 +82,21 @@ export const StageModal: React.FC<StageModalProps> = ({
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`
-                    flex-1 py-4 flex items-center justify-center gap-2 font-pixel text-xs md:text-sm transition-colors
+                    flex-1 py-4 md:py-4 min-h-[52px] flex items-center justify-center gap-1 md:gap-2 font-pixel text-[10px] md:text-sm transition-colors
                     ${activeTab === tab.id 
                       ? 'bg-retro-orange text-black' 
                       : 'bg-retro-black text-gray-500 hover:text-white hover:bg-retro-gray'
                     }
                   `}
                 >
-                  <tab.icon size={16} />
-                  {tab.label}
+                  <tab.icon size={16} className="md:w-4 md:h-4" />
+                  <span className="hidden xs:inline">{tab.label}</span>
                 </button>
               ))}
             </div>
             
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-retro-black custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-retro-black custom-scrollbar">
               {activeTab === 'overview' && (
                 <div className="space-y-8 animate-in fade-in duration-300">
                   <div>
@@ -235,10 +235,10 @@ export const StageModal: React.FC<StageModalProps> = ({
             </div>
             
             {/* Footer Actions */}
-            <div className="p-6 border-t-4 border-retro-gray bg-retro-black flex justify-between items-center">
+            <div className="p-4 md:p-6 border-t-2 md:border-t-4 border-retro-gray bg-retro-black flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-3 md:py-2 text-gray-400 hover:text-white transition-colors text-center min-h-[44px]"
               >
                 ← Volver al Roadmap
               </button>
@@ -249,7 +249,7 @@ export const StageModal: React.FC<StageModalProps> = ({
                 }}
                 disabled={isCompleted}
                 className={`
-                  px-6 py-3 font-pixel text-sm flex items-center gap-2 transition-all
+                  px-6 py-4 md:py-3 font-pixel text-xs md:text-sm flex items-center justify-center gap-2 transition-all min-h-[52px]
                   ${isCompleted 
                     ? 'bg-green-600 text-white cursor-default' 
                     : 'bg-retro-orange text-black hover:bg-white hover:scale-105'
@@ -260,11 +260,11 @@ export const StageModal: React.FC<StageModalProps> = ({
                 {isCompleted ? (
                   <>
                     <CheckCircle size={18} />
-                    Misión Completa
+                    <span>Misión Completa</span>
                   </>
                 ) : (
                   <>
-                    Completar Misión
+                    <span>Completar Misión</span>
                     <span className="animate-pulse">_</span>
                   </>
                 )}
