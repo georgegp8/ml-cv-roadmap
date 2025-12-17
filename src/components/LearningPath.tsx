@@ -46,16 +46,6 @@ export const LearningPath: React.FC<LearningPathProps> = ({ totalStages }) => {
 
   return (
     <>
-      {/* Línea vertical simple para móvil */}
-      <div className="md:hidden absolute left-1/2 top-0 w-1 -translate-x-1/2 pointer-events-none z-10"
-        style={{ 
-          height: `${vbHeight}px`,
-          background: 'linear-gradient(180deg, rgba(255,107,53,0.3) 0%, rgba(255,107,53,0.6) 100%)',
-          backgroundSize: '100% 20px',
-          backgroundRepeat: 'repeat-y'
-        }}
-      />
-      
       {/* Paths curvos para desktop */}
       <svg
         className="absolute top-0 left-0 w-full pointer-events-none hidden md:block z-10"

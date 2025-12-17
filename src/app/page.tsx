@@ -113,6 +113,7 @@ export default function Home() {
                   y={index}
                   onClick={() => handleNodeClick(stage)}
                   isLeft={xPos < 50}
+                  isLast={index === curriculum.length - 1}
                 />
               </div>
             );

@@ -13,6 +13,7 @@ interface PathNodeProps {
   y: number; // Index
   onClick: () => void;
   isLeft?: boolean;
+  isLast?: boolean;
 }
 
 export const PathNode: React.FC<PathNodeProps> = ({
@@ -24,6 +25,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
   y,
   onClick,
   isLeft = false,
+  isLast = false,
 }) => {
   const statusConfig = {
     locked: {
@@ -114,6 +116,28 @@ export const PathNode: React.FC<PathNodeProps> = ({
             {title}
           </div>
         </div>
+        
+        {/* Flecha animada para móvil (no mostrar en el último nodo) */}
+        {!isLast && (
+          <div className="md:hidden mt-6 flex flex-col items-center gap-1 animate-bounce">
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              className="text-retro-orange"
+            >
+              <path 
+                d="M12 5V19M12 19L5 12M12 19L19 12" 
+                stroke="currentColor" 
+                strokeWidth="3" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div className="w-1 h-8 bg-gradient-to-b from-retro-orange/60 to-transparent"></div>
+          </div>
+        )}
       </div>
     </div>
   );
