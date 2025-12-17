@@ -8,6 +8,7 @@ import { StageModal } from '../components/StageModal';
 import { ProgressHeader } from '../components/ProgressHeader';
 import { ConfettiEffect } from '../components/ConfettiEffect';
 import { Toast } from '../components/Toast';
+import { VictoryModal } from '../components/VictoryModal';
 import { curriculum, Stage } from '../data/curriculum';
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [showVictory, setShowVictory] = useState(false);
 
   // Calculate status for each stage
   const getStageStatus = (index: number, id: string) => {
@@ -43,7 +45,8 @@ export default function Home() {
 
   const handleComplete = (id: string) => {
     if (!completedStages.includes(id)) {
-      setCompletedStages([...completedStages, id]);
+      const newCompletedStages = [...completedStages, id];
+      setCompletedStages(newCompletedStages);
       
       // Trigger confetti and toast
       setShowConfetti(true);
@@ -53,6 +56,13 @@ export default function Home() {
       
       // Reset confetti after animation
       setTimeout(() => setShowConfetti(false), 3500);
+      
+      // Verificar si se completaron todas las misiones
+      if (newCompletedStages.length === curriculum.length) {
+        setTimeout(() => {
+          setShowVictory(true);
+        }, 4000); // Esperar a que termine el confeti
+      }
     }
   };
 
@@ -133,6 +143,13 @@ export default function Home() {
         isCompleted={
           selectedStage ? completedStages.includes(selectedStage.id) : false
         }
+      />
+      
+      <VictoryModal
+        isOpen={showVictory}
+        onClose={() => setShowVictory(false)}
+        completedCount={completedStages.length}
+        totalCount={curriculum.length}
       />
     </div>
   );

@@ -195,10 +195,10 @@ else:
     window.open(`https://colab.research.google.com/notebook#create=true&notebook=${encoded}`, '_blank');
   };
 
-  // Abrir en Repl.it
-  const openInReplit = () => {
-    const replitUrl = `https://replit.com/languages/python3?code=${encodeURIComponent(code)}`;
-    window.open(replitUrl, '_blank');
+  // Abrir en Online-Python.com (no requiere cuenta)
+  const openInOnlinePython = () => {
+    const pythonUrl = `https://www.online-python.com/?code=${encodeURIComponent(code)}`;
+    window.open(pythonUrl, '_blank');
   };
 
   if (!mounted) {
@@ -257,16 +257,16 @@ else:
             <span className="hidden sm:inline">Colab</span>
           </button>
           
-          {/* Repl.it */}
+          {/* Online-Python */}
           <button
-            onClick={openInReplit}
+            onClick={openInOnlinePython}
             className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-semibold transition-colors min-h-[44px] flex items-center gap-2"
-            title="Abrir en Repl.it"
+            title="Abrir en Online-Python (sin cuenta)"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/>
             </svg>
-            <span className="hidden sm:inline">Repl.it</span>
+            <span className="hidden sm:inline">Online</span>
           </button>
           
           {/* Reset */}
@@ -280,7 +280,7 @@ else:
         </div>
         
         <div className="mt-2 text-[10px] text-gray-500">
-          💡 Usa <span className="text-blue-400">Colab</span> o <span className="text-green-400">Repl.it</span> para todas las librerías
+          💡 Usa <span className="text-blue-400">Colab</span> o <span className="text-green-400">Online-Python</span> para todas las librerías
         </div>
       </div>
 
