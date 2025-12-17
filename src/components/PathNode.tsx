@@ -89,8 +89,8 @@ export const PathNode: React.FC<PathNodeProps> = ({
           
           {/* Tooltip on hover */}
           {status === 'locked' && (
-            <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-retro-black border-2 border-gray-600 px-3 py-2 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
-              <div className="text-gray-400">{getTooltip()}</div>
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-retro-black border-2 border-gray-600 px-3 py-2 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
+              <div className="text-white">{getTooltip()}</div>
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-retro-black border-b-2 border-r-2 border-gray-600 rotate-45"></div>
             </div>
           )}
