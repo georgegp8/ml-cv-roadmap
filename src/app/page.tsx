@@ -18,9 +18,6 @@ export default function Home() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1024
-  );
 
   // Calculate status for each stage
   const getStageStatus = (index: number, id: string) => {
@@ -61,9 +58,8 @@ export default function Home() {
 
   // Helper to determine X position based on index for S-curve
   const getXPosition = (index: number) => {
-    // Mobile: always center (50%)
-    if (windowWidth < 768) return 50;
     // Desktop: 50 -> 75 -> 50 -> 25 -> 50 pattern
+    // Mobile will always center (50%) via CSS
     const pos = index % 4;
     if (pos === 0) return 50;
     if (pos === 1) return 75;
@@ -71,13 +67,6 @@ export default function Home() {
     if (pos === 3) return 25;
     return 50;
   };
-
-  // Handle resize for responsive positioning
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   return (
     <div className="min-h-screen font-mono text-white relative overflow-x-hidden">

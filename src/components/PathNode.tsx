@@ -66,11 +66,11 @@ export const PathNode: React.FC<PathNodeProps> = ({
   
   return (
     <div
-      className="absolute transform -translate-x-1/2"
+      className="path-node absolute left-1/2 transform -translate-x-1/2"
       style={{
-        left: `${x}%`,
+        '--node-x': `${x}%`,
         top: `${y * 180 - 20}px`,
-      }}
+      } as React.CSSProperties & { '--node-x': string }}
     >
       {/* Node Container */}
       <div className="flex flex-col items-center group">
@@ -89,9 +89,9 @@ export const PathNode: React.FC<PathNodeProps> = ({
           
           {/* Tooltip on hover */}
           {status === 'locked' && (
-            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 bg-retro-black border-2 border-gray-600 px-3 py-2 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
+            <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-retro-black border-2 border-gray-600 px-3 py-2 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
               <div className="text-gray-400">{getTooltip()}</div>
-              <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-retro-black border-t-2 border-l-2 border-gray-600 rotate-45"></div>
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-retro-black border-b-2 border-r-2 border-gray-600 rotate-45"></div>
             </div>
           )}
           
@@ -111,7 +111,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
         </div>
         
         {/* Title */}
-        <div className={`${id === 'opencv' ? '-mt-2' : 'mt-3'} === 'opencv' ? '-mt-2' : 'mt-3'} ${isLeft ? 'md:mr-32' : id === 'opencv' ? 'md:ml-48' : 'md:ml-32'}`}>
+        <div className={`${id === 'opencv' ? '-mt-2' : 'mt-3'} ${isLeft ? 'md:mr-32' : id === 'opencv' ? 'md:ml-48' : 'md:ml-32'}`}>
           <div className="px-3 py-1 border-2 border-retro-orange bg-retro-black rounded font-pixel text-xs text-white shadow-lg">
             {title}
           </div>

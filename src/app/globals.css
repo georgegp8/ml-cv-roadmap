@@ -27,6 +27,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* PathNode responsive positioning - avoid SSR hydration mismatch */
+@media (min-width: 768px) {
+  .path-node {
+    left: var(--node-x) !important;
+  }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
