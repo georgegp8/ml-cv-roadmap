@@ -226,10 +226,9 @@ export const StageModal: React.FC<StageModalProps> = ({
                       <span>🚀</span> Consejos Pro
                     </h4>
                     <ul className="space-y-2 text-sm text-gray-300">
-                      <li>• Modifica el código y ve los resultados instantáneamente</li>
-                      <li>• Usa print() para depurar y entender el flujo</li>
-                      <li>• Prueba diferentes valores para experimentar</li>
-                      <li>• Haz clic en "Resetear" para restaurar el código original</li>
+                      {stage.proTips.map((tip, idx) => (
+                        <li key={idx}>• {tip}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>

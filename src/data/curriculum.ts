@@ -15,6 +15,7 @@ export interface Stage {
   keyTopics: string[];
   practicalExamples: CodeExample[];
   resources: { title: string; url: string }[];
+  proTips: string[];
 }
 
 export const curriculum: Stage[] = [
@@ -83,6 +84,12 @@ print(processor.process())  # [20, 40]`,
     resources: [
       { title: 'Python.org Tutorial Oficial', url: 'https://docs.python.org/3/tutorial/' },
       { title: 'Real Python - Beginner Tutorials', url: 'https://realpython.com/tutorials/basics/' },
+    ],
+    proTips: [
+      'Las comprensiones de listas son 2-3x más rápidas que loops equivalentes',
+      'Usa f-strings (f"...") para formatear texto - son más legibles y rápidas',
+      'Los diccionarios son perfectos para mapear categorías en ML',
+      'Practica debugging con print() y type() para entender el flujo de datos'
     ],
   },
   {
@@ -158,8 +165,12 @@ plt.show()`,
     resources: [
       { title: 'NumPy Documentation', url: 'https://numpy.org/doc/stable/' },
       { title: 'Matplotlib Tutorials', url: 'https://matplotlib.org/stable/tutorials/index.html' },
-    ],
-  },
+    ],    proTips: [
+      'Usa operaciones vectorizadas de NumPy - son hasta 100x más rápidas que loops',
+      'Broadcasting automático evita código repetitivo: (3,1) + (3,) funciona',
+      'plt.style.use("seaborn") mejora visualizaciones sin esfuerzo extra',
+      'Siempre normaliza datos con (x - mean) / std antes de entrenar modelos'
+    ],  },
   {
     id: 'pandas',
     icon: '🐼',
@@ -247,6 +258,12 @@ print(f"\\nPersonas con salario > 40k: {len(high_earners)}")`,
     resources: [
       { title: 'Pandas Documentation', url: 'https://pandas.pydata.org/docs/' },
       { title: 'Pandas Cheat Sheet', url: 'https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf' },
+    ],
+    proTips: [
+      'df.describe() + df.info() son tus primeros pasos en CUALQUIER dataset',
+      'groupby() es la clave para feature engineering: agrupa y crea nuevas columnas',
+      'Usa .isnull().sum() para detectar valores faltantes antes de entrenar',
+      'pd.get_dummies() convierte categorías a números automáticamente para ML'
     ],
   },
   {
@@ -343,8 +360,12 @@ print(f"Mejor score: {grid_search.best_score_:.2f}")`,
     resources: [
       { title: 'scikit-learn Documentation', url: 'https://scikit-learn.org/stable/' },
       { title: 'scikit-learn User Guide', url: 'https://scikit-learn.org/stable/user_guide.html' },
-    ],
-  },
+    ],    proTips: [
+      'SIEMPRE divide train/test ANTES de cualquier preprocesamiento para evitar data leakage',
+      'Cross-validation (cv=5) da métricas más confiables que un solo train_test_split',
+      'Pipeline() automatiza preprocesamiento + modelo en un solo objeto',
+      'GridSearchCV encuentra hiperparámetros óptimos automáticamente - úsalo siempre'
+    ],  },
   {
     id: 'opencv',
     icon: '👁️',
@@ -448,6 +469,12 @@ cv2_imshow(img)`,
       { title: 'OpenCV Documentation', url: 'https://docs.opencv.org/' },
       { title: 'OpenCV Python Tutorials', url: 'https://docs.opencv.org/master/d6/d00/tutorial_py_root.html' },
     ],
+    proTips: [
+      'Convierte a escala de grises SIEMPRE que el color no sea importante - acelera 3x',
+      'GaussianBlur() antes de Canny reduce ruido y mejora detección de bordes',
+      'Haar Cascades son rápidos pero menos precisos que deep learning (YOLO)',
+      'Ajusta minNeighbors en detectMultiScale para balance precisión/falsos positivos'
+    ],
   },
   {
     id: 'pytorch',
@@ -544,6 +571,12 @@ with torch.no_grad():
     resources: [
       { title: 'PyTorch Documentation', url: 'https://pytorch.org/docs/stable/index.html' },
       { title: 'PyTorch Tutorials', url: 'https://pytorch.org/tutorials/' },
+    ],
+    proTips: [
+      'Usa .to(device) para mover modelo y datos a GPU - acelera 10-100x',
+      'DataLoader con batch_size=32-128 optimiza velocidad de entrenamiento',
+      'torch.no_grad() en validación ahorra memoria y acelera inferencia',
+      'lr_scheduler ajusta learning rate automáticamente para mejor convergencia'
     ],
   },
   {
@@ -672,6 +705,12 @@ print("FPS promedio:", cap.get(cv2.CAP_PROP_FPS))`,
       { title: 'Ultralytics YOLOv8 Documentation', url: 'https://docs.ultralytics.com/' },
       { title: 'YOLO GitHub Repository', url: 'https://github.com/ultralytics/ultralytics' },
       { title: 'Train Custom YOLO Model', url: 'https://docs.ultralytics.com/modes/train/' },
+    ],
+    proTips: [
+      'Empieza con YOLOv8n (nano) para pruebas rápidas, luego sube a v8m/v8l',
+      'conf=0.5 (50% confianza) es buen balance - ajusta según falsos positivos',
+      'Fine-tuning con 100-500 imágenes propias supera modelos genéricos',
+      'Usa augmentación (flip, rotate, scale) para mejorar con pocos datos'
     ],
   },
 ];
