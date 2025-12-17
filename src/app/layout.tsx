@@ -17,6 +17,9 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "ML & CV Roadmap - Aprende Machine Learning y Computer Vision",
   description: "Roadmap educativo para aprender Machine Learning con enfoque en Visión por Computadora",
+  icons: {
+    icon: '/logo_club_ml.png',
+  },
 };
 
 export default function RootLayout({

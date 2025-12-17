@@ -47,6 +47,9 @@ export const StageIcon: React.FC<StageIconProps> = ({ stageId, size = 40, classN
     return <span className={className} style={{ fontSize: size }}>📚</span>;
   }
 
+  // Python es el primer stage, marcar como LCP con loading eager
+  const isPython = stageId === 'python-basics';
+
   return (
     <div className={`relative ${className}`} style={{ width: size, height: size }}>
       <Image
@@ -55,6 +58,8 @@ export const StageIcon: React.FC<StageIconProps> = ({ stageId, size = 40, classN
         fill
         className="object-contain"
         unoptimized
+        loading={isPython ? 'eager' : 'lazy'}
+        priority={isPython}
       />
     </div>
   );
