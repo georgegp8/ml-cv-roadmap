@@ -540,7 +540,40 @@ print(model)`,
       },
       {
         title: 'Ciclo de Entrenamiento',
-        code: `# Entrenamiento
+        code: `import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import TensorDataset, DataLoader
+
+# Crear datos de ejemplo
+X_train = torch.randn(1000, 784)
+y_train = torch.randint(0, 10, (1000,))
+X_test = torch.randn(200, 784)
+y_test = torch.randint(0, 10, (200,))
+
+# DataLoaders
+train_dataset = TensorDataset(X_train, y_train)
+test_dataset = TensorDataset(X_test, y_test)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=32)
+
+# Modelo, pérdida y optimizador (del ejemplo anterior)
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(128, 10)
+    
+    def forward(self, x):
+        return self.fc2(self.relu(self.fc1(x)))
+
+model = SimpleNN()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# ENTRENAMIENTO
+num_epochs = 3
 model.train()
 for epoch in range(num_epochs):
     for batch_idx, (data, targets) in enumerate(train_loader):
@@ -553,12 +586,12 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         
-        if batch_idx % 100 == 0:
+        if batch_idx % 10 == 0:
             print(f'Epoch [{epoch+1}/{num_epochs}], '
                   f'Step [{batch_idx}/{len(train_loader)}], '
                   f'Loss: {loss.item():.4f}')
 
-# Evaluación
+# EVALUACIÓN
 model.eval()
 with torch.no_grad():
     correct = 0
@@ -569,9 +602,9 @@ with torch.no_grad():
         total += targets.size(0)
         correct += (predicted == targets).sum().item()
     
-    print(f'Accuracy: {100 * correct / total:.2f}%')`,
+    print(f'\\n✓ Accuracy: {100 * correct / total:.2f}%')`,
         explanation:
-          'El ciclo de entrenamiento es el corazón del deep learning. Aprende este patrón, lo usarás siempre.',
+          'El ciclo de entrenamiento es el corazón del deep learning. Aprende este patrón: forward pass → calcular pérdida → backward pass → actualizar pesos.',
       },
     ],
     resources: [
