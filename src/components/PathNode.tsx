@@ -32,20 +32,23 @@ export const PathNode: React.FC<PathNodeProps> = ({
       opacity: 'opacity-50',
       cursor: 'cursor-not-allowed',
       hover: '',
+      animate: '',
     },
     unlocked: {
       bg: 'bg-retro-gray',
       border: 'border-retro-orange',
       opacity: 'opacity-100',
       cursor: 'cursor-pointer',
-      hover: 'hover:animate-bounce hover:shadow-lg hover:shadow-retro-orange/50',
+      hover: 'hover:shadow-lg hover:shadow-retro-orange/50',
+      animate: 'animate-bounce',
     },
     completed: {
       bg: 'bg-retro-orange',
       border: 'border-retro-orange',
       opacity: 'opacity-100',
       cursor: 'cursor-pointer',
-      hover: 'hover:animate-bounce hover:shadow-lg hover:shadow-retro-orange/30',
+      hover: 'hover:shadow-lg hover:shadow-retro-orange/30',
+      animate: '',
     },
   };
   
@@ -67,7 +70,7 @@ export const PathNode: React.FC<PathNodeProps> = ({
           className={`
             w-24 h-24 rounded-xl border-4 flex items-center justify-center
             ${config.bg} ${config.border} ${config.opacity} ${config.cursor}
-            transition-all duration-300 ${config.hover}
+            transition-all duration-300 ${config.hover} ${config.animate}
             relative z-20
           `}
           onClick={canClick ? onClick : undefined}
