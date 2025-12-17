@@ -210,24 +210,32 @@ print(df)`,
       {
         title: 'Análisis Exploratorio',
         code: `import pandas as pd
+import numpy as np
 
-# Cargar dataset
-df = pd.read_csv('data.csv')
+# Crear dataset de ejemplo
+data = {
+    'ciudad': ['Madrid', 'Barcelona', 'Madrid', 'Valencia', 'Barcelona'],
+    'edad': [25, 30, 35, np.nan, 28],
+    'salario': [30000, 45000, np.nan, 35000, 42000]
+}
+df = pd.DataFrame(data)
 
 # Exploración básica
-print(df.head())
+print('Dataset:')
+print(df)
+print('\nInformación:')
 print(df.info())
+print('\nEstadísticas:')
 print(df.describe())
 
 # Agrupar y analizar
 city_stats = df.groupby('ciudad').agg({
-    'salario': ['mean', 'median', 'std'],
+    'salario': ['mean', 'count'],
     'edad': 'mean'
 })
 
+print('\nEstadísticas por ciudad:')
 print(city_stats)
-
-# Filtrar datos
 high_earners = df[df['salario'] > 60000]
 print(f"Personas con salario > 60k: {len(high_earners)}")`,
         explanation:
@@ -296,7 +304,15 @@ print(classification_report(y_test, y_pred))`,
         code: `from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.datasets import load_iris
+
+# Cargar y preparar datos
+iris = load_iris()
+X, y = iris.data, iris.target
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
 # Crear pipeline
 pipeline = Pipeline([

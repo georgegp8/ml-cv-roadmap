@@ -88,22 +88,66 @@ export const CodePlayground: React.FC<CodePlaygroundProps> = ({
     setOutput('Ejecutando...\n');
 
     try {
-      // Capturar stdout
+      // Capturar stdout y configurar matplotlib para base64
       await pyodideRef.current.runPythonAsync(`
 import sys
-from io import StringIO
+from io import StringIO, BytesIO
+import base64
 sys.stdout = StringIO()
+
+# Configurar matplotlib para no usar display
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    _matplotlib_available = True
+except:
+    _matplotlib_available = False
 `);
 
       // Ejecutar el código del usuario
       await pyodideRef.current.runPythonAsync(code);
 
-      // Obtener la salida
-      const stdout = await pyodideRef.current.runPythonAsync('sys.stdout.getvalue()');
+      // Capturar salida de texto
+      let stdout = await pyodideRef.current.runPythonAsync('sys.stdout.getvalue()');
+      
+      // Capturar gráficas de matplotlib si existen
+      const hasPlot = await pyodideRef.current.runPythonAsync(`
+if _matplotlib_available and plt.get_fignums():
+    buf = BytesIO()
+    plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
+    buf.seek(0)
+    img_str = base64.b64encode(buf.read()).decode('utf-8')
+    plt.close('all')
+    img_str
+else:
+    ''
+`);
+      
+      if (hasPlot) {
+        stdout += `\n\n📊 Gráfica generada:\n<img src="data:image/png;base64,${hasPlot}" style="max-width: 100%; height: auto; margin-top: 10px;" />`;
+      }
       
       setOutput(stdout || '✓ Código ejecutado exitosamente (sin salida)');
     } catch (error: any) {
-      setOutput(`Error:\n${error.message}`);
+      let errorMsg = `Error:\n${error.message}`;
+      
+      // Mensajes personalizados para módulos no disponibles
+      if (error.message.includes('opencv') || error.message.includes('cv2')) {
+        errorMsg += '\n\n💡 OpenCV no está disponible en el navegador.';
+        errorMsg += '\n📦 Instala localmente: pip install opencv-python';
+        errorMsg += '\n🌐 Prueba demos online: https://docs.opencv.org/4.x/d5/d10/tutorial_js_root.html';
+      } else if (error.message.includes('torch') || error.message.includes('pytorch')) {
+        errorMsg += '\n\n💡 PyTorch no está disponible en el navegador.';
+        errorMsg += '\n📦 Instala localmente: pip install torch';
+        errorMsg += '\n🌐 Tutoriales interactivos: https://pytorch.org/tutorials/';
+      } else if (error.message.includes('ultralytics') || error.message.includes('yolo')) {
+        errorMsg += '\n\n💡 YOLO no está disponible en el navegador.';
+        errorMsg += '\n📦 Instala localmente: pip install ultralytics';
+        errorMsg += '\n🌐 Demo online: https://universe.roboflow.com/';
+      }
+      
+      setOutput(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -186,9 +230,17 @@ sys.stdout = StringIO()
       {/* Output */}
       <div className="bg-[#1e1e1e] p-3 md:p-4">
         <div className="text-[10px] md:text-xs text-gray-500 mb-2 font-pixel">SALIDA:</div>
-        <pre className="text-green-400 font-mono text-xs md:text-sm whitespace-pre-wrap break-words">
-          {output || 'Sin salida aún. Ejecuta el código para ver los resultados.'}
-        </pre>
+        <div className="text-green-400 font-mono text-xs md:text-sm whitespace-pre-wrap break-words">
+          {output ? (
+            output.includes('<img') ? (
+              <div dangerouslySetInnerHTML={{ __html: output }} />
+            ) : (
+              <pre>{output}</pre>
+            )
+          ) : (
+            'Sin salida aún. Ejecuta el código para ver los resultados.'
+          )}
+        </div>
       </div>
     </div>
   );
